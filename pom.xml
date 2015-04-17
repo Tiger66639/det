@@ -13,8 +13,8 @@
 
   <packaging>bundle</packaging>
 
-  <name>Pentaho Data Explorer Toolkit</name>
-  <description>Pentaho Data Explorer Toolkit</description>
+  <name>Pentaho Data Explorer Tool</name>
+  <description>Pentaho Data Explorer Tool</description>
   <url>http://www.pentaho.com/</url>
 
   <developers>

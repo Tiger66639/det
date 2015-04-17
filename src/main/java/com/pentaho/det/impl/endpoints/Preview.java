@@ -15,7 +15,7 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.endpoints;
+package com.pentaho.det.impl.endpoints;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,7 +29,8 @@ public class Preview {
   @Path( "/hello" )
   @Produces( MediaType.TEXT_PLAIN )
   public String hello() {
-    return "Hello from Data Explorer Toolkit";
+    return "Hello from Data Explorer Tool";
   }
+
 
 }

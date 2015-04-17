@@ -18,7 +18,7 @@
   ">
 
   <!-- START: Configuration -->
-  <cm:property-placeholder persistent-id="pentaho.data.explorer.toolkit"
+  <cm:property-placeholder persistent-id="pentaho.data.explorer.tool"
                            update-strategy="reload">
     <cm:default-properties>
       <!--
@@ -29,9 +29,15 @@
   <!-- END: Configuration -->
 
   <!-- Spoon Plugin -->
-  <bean id="DataExplorerToolkitSpoonPlugin" class="com.pentaho.det.di.plugin.DataExplorerToolkitPlugin"
+  <bean id="DataExplorerToolkitSpoonPlugin" class="com.pentaho.det.impl.di.DataExplorerToolkitPlugin"
         scope="singleton">
     <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonPluginType"/>
+  </bean>
+
+
+  <bean class="com.pentaho.det.impl.di.PreviewListener"
+        scope="singleton">
+    <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonUiExtenderPluginType"/>
   </bean>
 
   <cxf:bus id="DataExplorerToolkitImplBus">
@@ -40,7 +46,7 @@
 
   <jaxrs:server address="/DataExplorerToolkit" id="dataExplorerToolkitService">
     <jaxrs:serviceBeans>
-      <bean class="com.pentaho.det.endpoints.Preview" />
+      <bean class="com.pentaho.det.impl.endpoints.Preview" />
     </jaxrs:serviceBeans>
     <jaxrs:providers>
       <bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">

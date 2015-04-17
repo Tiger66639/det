@@ -15,7 +15,7 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.di.plugin;
+package com.pentaho.det.impl.di;
 
 import org.pentaho.di.ui.spoon.SpoonPlugin;
 import org.pentaho.di.ui.spoon.SpoonPluginCategories;
@@ -27,8 +27,8 @@ import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 
 @SpoonPlugin( id = "pentaho-det",
-    description = "Pentaho Data Explorer Toolkit",
-    name = "Pentaho Data Explorer Toolkit",
+    description = "Pentaho Data Explorer Tool",
+    name = "Pentaho Data Explorer Tool",
     image = "" )
 @SpoonPluginCategories( { "spoon" } )
 public class DataExplorerToolkitPlugin implements SpoonPluginInterface {
