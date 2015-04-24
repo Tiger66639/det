@@ -42,29 +42,34 @@
 define(
     [
       'common-ui/angular',
-      'common-ui/angular-route',
-      'common-ui/angular-resource',
 
       './services/previewDataProvider',
-      './applicationController'
+      './applicationController',
+
+      'angular-ui-router',
+      'common-ui/angular-resource',
     ],
-    function ( angular, angularRoute, angularResource,
+    function ( angular,
                previewDataProvider, applicationController ) {
 
-      var detApp = angular.module( 'detApp', [ 'ngRoute', 'ngResource' ] );
+      var detApp = angular.module( 'detApp', [ 'ui.router', 'ngResource' ] );
 
-      detApp.config( [ '$routeProvider', function( $routeProvider ) {
+      detApp.config( [ '$stateProvider', '$urlRouterProvider',
+        function( $stateProvider, $urlRouterProvider ) {
 
-        $routeProvider.when( '/',
-            {
-              templateUrl: 'partials/applicationView.html',
-              controller: 'applicationController'
+        // For any unmatched url, send to /route1
+        $urlRouterProvider.otherwise( "/route1" );
+
+        $stateProvider
+            .state('route1', {
+              url: "/route1",
+              templateUrl: "partials/route1.html"
+            })
+            .state('route2', {
+              url: "/route2",
+              templateUrl: "partials/route2.html"
             });
 
-        $routeProvider.otherwise(
-            {
-              redirectTo: '/'
-            });
       }]);
 
       // dependency is injected by argument name convention

@@ -17,19 +17,39 @@
   -->
 
 <html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <script src="/requirejs-manager/js/require-init.js"></script>
-  <script type="text/javascript">
-    require([ "com.pentaho.det/js/app" ], function( app ) {
-      app.init();
-    });
-  </script>
 
-  <title>Data Explorer Tool</title>
-</head>
-<body>
-  <h1>Data Explorer Tool</h1>
-  <div data-ng-view></div>
-</body>
+  <head>
+    <script src="/requirejs-manager/js/require-init.js"></script>
+    <script type="text/javascript">
+      require([ "com.pentaho.det/js/app" ], function( app ) {
+        app.init();
+      });
+    </script>
+
+    <title>Data Explorer Tool</title>
+    <!-- Bootstrap CSS -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body class="container">
+    <div data-ng-controller="applicationController">
+      <div class="navbar">
+        <div class="navbar-inner">
+          <a class="brand" href="#">Home</a>
+          <ul class="nav">
+            <li data-ng-repeat="state in pluginStates">
+              <a data-ui-sref={{state.name}}>{{state.name}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span12">
+          <div class="well" data-ui-view></div>
+        </div>
+      </div>
+    </div>
+  </body>
+
 </html>

@@ -20,13 +20,16 @@
 define(
     function () {
 
-      function applicationController( $scope, previewDataProvider ) {
+      // TODO: remove "provider" from previewDataProvider
+      function applicationController( $scope, $state, previewDataProvider ) {
 
         $scope.previewStepsData = previewDataProvider.getPreviewData();
 
+        $scope.pluginStates = $state.get();
+
       }
 
-      applicationController.$inject = [ '$scope', 'previewDataProvider' ];
+      applicationController.$inject = [ '$scope', '$state', 'previewDataProvider' ];
       return applicationController;
 
     }
