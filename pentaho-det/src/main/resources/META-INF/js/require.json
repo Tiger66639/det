@@ -1,0 +1,12 @@
+{
+  "paths": {
+    "com.pentaho.det": "DataExplorerTool/web"
+  },
+
+
+  "shim": {
+  },
+
+  "map": {
+  }
+}

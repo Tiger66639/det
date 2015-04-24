@@ -16,13 +16,10 @@
   ~ Copyright (c) 2015 Pentaho Corporation. All rights reserved.
   -->
 
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-
-  <title>Data Explorer Tool</title>
-</head>
-<body>
-  <h1>Data Explorer Tool</h1>
-</body>
-</html>
+<div>
+  <ul>
+    <li data-ng-repeat="previewStepData in previewStepsData">
+      {{previewStepData.name}}
+    </li>
+  </ul>
+</div>

@@ -17,32 +17,8 @@
 
 package com.pentaho.det.impl.di;
 
-import org.pentaho.di.ui.spoon.SpoonPlugin;
-import org.pentaho.di.ui.spoon.SpoonPluginCategories;
 
-import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
-import org.pentaho.di.ui.spoon.SpoonPerspective;
-import org.pentaho.di.ui.spoon.SpoonPluginInterface;
-import org.pentaho.ui.xul.XulDomContainer;
-import org.pentaho.ui.xul.XulException;
-
-@SpoonPlugin( id = "pentaho-det",
-    description = "Pentaho Data Explorer Tool",
-    name = "Pentaho Data Explorer Tool",
-    image = "" )
-@SpoonPluginCategories( { "spoon" } )
-public class DataExplorerToolkitPlugin implements SpoonPluginInterface {
-
-  public void applyToContainer( String s, XulDomContainer xulDomContainer ) throws XulException {
-
-  }
-
-  public SpoonLifecycleListener getLifecycleListener() {
-    return null;
-  }
-
-  public SpoonPerspective getPerspective() {
-    return null;
-  }
-
+public interface IEventHandler<T> {
+  void handle( T arg );
+  Class<T> getTypeParameter();
 }

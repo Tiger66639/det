@@ -17,7 +17,7 @@
 
 package com.pentaho.det.impl.di;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -27,38 +27,12 @@ import java.util.Set;
 public class EventHandlerMap {
 
   // region inner definitions
-  public interface IEventHandler<T> {
-    void handle( T arg );
-    Class<T> getTypeParameter();
-  }
-
-  public abstract static class EventHandler<T> implements  IEventHandler<T> {
-
-    public EventHandler( Class<T> typeParameter ) {
-      if ( typeParameter == null ) {
-        throw new IllegalArgumentException();
-      }
-
-      this.typeParameter = typeParameter;
-    }
-
-    @Override
-    public abstract void handle( T arg );
-
-    @Override
-    public Class<T> getTypeParameter() {
-      return this.typeParameter;
-    }
-    private Class<T> typeParameter;
-
-  }
-
-  private static final class EventId {
-    public Class<?> getContextClass() {
+  private static final class EventId<T> {
+    public Class<T> getContextClass() {
       return this.contextClass;
     }
 
-    private final Class<?> contextClass;
+    private final Class<T> contextClass;
 
     public String getEventName() {
       return this.eventName;
@@ -66,7 +40,7 @@ public class EventHandlerMap {
 
     private final String eventName;
 
-    public EventId( Class<?> contextClass, String eventName ) {
+    public EventId( Class<T> contextClass, String eventName ) {
       if ( contextClass == null ) {
         throw new IllegalArgumentException( "EventId class constructor cannot receive null contextClass argument." );
       }
@@ -105,8 +79,8 @@ public class EventHandlerMap {
   // endregion
 
   // region Properties
-  private Map<EventId, IEventHandler> eventHandlers = new Hashtable<>();
-  private Map<EventId, IEventHandler> getEventHandlers() {
+  private Map<EventId<?>, IEventHandler> eventHandlers = new Hashtable<>();
+  private Map<EventId<?>, IEventHandler> getEventHandlers() {
     return this.eventHandlers;
   }
 
@@ -118,7 +92,7 @@ public class EventHandlerMap {
       if ( eventNames != null ) {
         eventNames.add( eventId.getEventName() );
       } else {
-        eventNames = new HashSet<>( Arrays.asList( eventId.getEventName() ) );
+        eventNames = new HashSet<>( Collections.singletonList( eventId.getEventName() ) );
         eventMap.put( clazz, eventNames );
       }
     }
@@ -127,24 +101,24 @@ public class EventHandlerMap {
   // endregion
 
   // region Methods
-  public void handle( Object object, String eventName ) {
+  public <T> void handle( T object, String eventName ) {
     if ( object == null || eventName == null ) {
       throw new IllegalArgumentException();
     }
-    EventId eventId = new EventId( object.getClass(), eventName );
-    IEventHandler eventHandler = this.getEventHandlers().get( eventId );
+    EventId<T> eventId = new EventId( object.getClass(), eventName );
+    IEventHandler<T> eventHandler = this.getEventHandlers().get( eventId );
     if ( eventHandler != null ) {
       eventHandler.handle( object );
     }
   }
 
   public <T> void putEventHandler( String eventName, IEventHandler<T> eventHandler ) {
-    EventId eventId = new EventId( eventHandler.getTypeParameter() , eventName );
+    EventId<T> eventId = new EventId<>( eventHandler.getTypeParameter() , eventName );
     this.getEventHandlers().put( eventId, eventHandler );
   }
 
-  public void removeEventHandler( Class<?> clazz, String eventName ) {
-    EventId eventId = new EventId( clazz, eventName );
+  public <T> void removeEventHandler( Class<T> clazz, String eventName ) {
+    EventId<T> eventId = new EventId<>( clazz, eventName );
     this.getEventHandlers().remove( eventId );
   }
 

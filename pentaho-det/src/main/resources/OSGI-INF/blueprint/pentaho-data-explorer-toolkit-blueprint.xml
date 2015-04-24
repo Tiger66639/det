@@ -29,7 +29,7 @@
   <!-- END: Configuration -->
 
   <!-- Spoon Plugin -->
-  <bean id="DataExplorerToolkitSpoonPlugin" class="com.pentaho.det.impl.di.DataExplorerToolkitPlugin"
+  <bean id="DataExplorerToolSpoonPlugin" class="com.pentaho.det.impl.di.DataExplorerToolPlugin"
         scope="singleton">
     <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonPluginType"/>
   </bean>
@@ -40,11 +40,11 @@
     <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonUiExtenderPluginType"/>
   </bean>
 
-  <cxf:bus id="DataExplorerToolkitImplBus">
+  <cxf:bus id="DataExplorerToolImplBus">
 
   </cxf:bus>
 
-  <jaxrs:server address="/DataExplorerToolkit" id="dataExplorerToolkitService">
+  <jaxrs:server address="/DataExplorerTool" id="dataExplorerToolService">
     <jaxrs:serviceBeans>
       <bean class="com.pentaho.det.impl.endpoints.Preview" />
     </jaxrs:serviceBeans>
@@ -62,10 +62,10 @@
   <!-- Client side -->
 
   <!-- HttpService Whiteboard registration of web assets -->
-  <service id="DataExplorerToolkitWeb"
+  <service id="DataExplorerToolWeb"
            interface="org.ops4j.pax.web.extender.whiteboard.ResourceMapping">
     <bean class="org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping">
-      <property name="alias" value="/DataExplorerToolkit/web"/>
+      <property name="alias" value="/DataExplorerTool/web"/>
       <property name="path" value="/web"/>
     </bean>
   </service>

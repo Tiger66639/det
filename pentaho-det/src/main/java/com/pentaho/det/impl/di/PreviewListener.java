@@ -47,22 +47,22 @@ public class PreviewListener implements SpoonUiExtenderPluginInterface {
 
   // region Constructors
   public PreviewListener() {
-    EventHandlerMap.IEventHandler<TransDebugMetaWrapper> previewStartedHandler =
-        new EventHandlerMap.EventHandler<TransDebugMetaWrapper>( TransDebugMetaWrapper.class ) {
+    IEventHandler<TransDebugMetaWrapper> previewStartedHandler =
+        new EventHandler<TransDebugMetaWrapper>( TransDebugMetaWrapper.class ) {
           @Override public void handle( TransDebugMetaWrapper arg ) {
             int x = 42;
           }
         };
 
-    EventHandlerMap.IEventHandler<TransPreviewDialog> previewDialogOpenHandler =
-        new EventHandlerMap.EventHandler<TransPreviewDialog>( TransPreviewDialog.class ) {
+    IEventHandler<TransPreviewDialog> previewDialogOpenHandler =
+        new EventHandler<TransPreviewDialog>( TransPreviewDialog.class ) {
           @Override public void handle( TransPreviewDialog arg ) {
             int x = 42;
           }
         };
 
-    EventHandlerMap.IEventHandler<TransPreviewDialog.TransPreviewDialogSetDataWrapper> previewDialogDataSetHandler =
-        new EventHandlerMap.EventHandler<TransPreviewDialog.TransPreviewDialogSetDataWrapper>( TransPreviewDialog.TransPreviewDialogSetDataWrapper.class ) {
+    IEventHandler<TransPreviewDialog.TransPreviewDialogSetDataWrapper> previewDialogDataSetHandler =
+        new EventHandler<TransPreviewDialog.TransPreviewDialogSetDataWrapper>( TransPreviewDialog.TransPreviewDialogSetDataWrapper.class ) {
           @Override public void handle( TransPreviewDialog.TransPreviewDialogSetDataWrapper arg ) {
             int x = 42;
           }

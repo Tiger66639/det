@@ -15,22 +15,20 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.impl.endpoints;
+'use strict';
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+define(
+    function () {
 
-@Path( "preview" )
-public class Preview {
+      function applicationController( $scope, previewDataProvider ) {
 
-  @GET
-  @Path( "/hello" )
-  @Produces( MediaType.TEXT_PLAIN )
-  public String hello() {
-    return "Hello from Data Explorer Tool";
-  }
+        $scope.previewStepsData = previewDataProvider.getPreviewData();
 
+      }
 
-}
+      applicationController.$inject = [ '$scope', 'previewDataProvider' ];
+      return applicationController;
+
+    }
+);
+
