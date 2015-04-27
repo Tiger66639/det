@@ -1,0 +1,17 @@
+{
+  "paths": {
+    "com.pentaho.det.pluginB": "DataExplorerToolPluginB/web"
+  },
+
+  "config": {
+    "service": {
+      "com.pentaho.det.pluginB/js/app": "IDetPlugin"
+    }
+  },
+
+  "shim": {
+  },
+
+  "map": {
+  }
+}

@@ -42,32 +42,36 @@
 define(
     [
       'common-ui/angular',
+      'underscorejs',
 
       './services/previewDataProvider',
       './applicationController',
 
+      'service!IDetPlugin',
       'angular-ui-router',
       'common-ui/angular-resource',
     ],
-    function ( angular,
-               previewDataProvider, applicationController ) {
+    function ( angular, _,
+               previewDataProvider, applicationController,
+               detPlugins ) {
 
-      var detApp = angular.module( 'detApp', [ 'ui.router', 'ngResource' ] );
+      var moduleDependencies = [ 'ui.router', 'ngResource' ];
+      var detPluginModuleNames = _.pluck( detPlugins, 'name' );
+
+      moduleDependencies = _.union( moduleDependencies, detPluginModuleNames );
+
+      var detApp = angular.module( 'detApp', moduleDependencies );
 
       detApp.config( [ '$stateProvider', '$urlRouterProvider',
         function( $stateProvider, $urlRouterProvider ) {
 
         // For any unmatched url, send to /route1
-        $urlRouterProvider.otherwise( "/route1" );
+        $urlRouterProvider.otherwise( "/mainView" );
 
         $stateProvider
-            .state('route1', {
-              url: "/route1",
-              templateUrl: "partials/route1.html"
-            })
-            .state('route2', {
-              url: "/route2",
-              templateUrl: "partials/route2.html"
+            .state('mainView', {
+              url: "/mainView",
+              templateUrl: "partials/pluginView.html"
             });
 
       }]);

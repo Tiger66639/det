@@ -124,6 +124,8 @@
   <modules>
     <module>pentaho-det</module>
     <module>pentaho-requirejs-service-plugin</module>
+    <module>pentaho-pluginA</module>
+    <module>pentaho-pluginB</module>
   </modules>
 
 </project>
