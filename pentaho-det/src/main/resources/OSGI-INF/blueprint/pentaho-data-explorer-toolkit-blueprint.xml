@@ -35,7 +35,8 @@
   </bean>
 
 
-  <bean class="com.pentaho.det.impl.di.PreviewListener"
+  <bean id="previewListener"
+        class="com.pentaho.det.impl.di.PreviewListener"
         scope="singleton">
     <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonUiExtenderPluginType"/>
   </bean>
@@ -46,15 +47,20 @@
 
   <jaxrs:server address="/DataExplorerTool" id="dataExplorerToolService">
     <jaxrs:serviceBeans>
-      <bean class="com.pentaho.det.impl.endpoints.Preview" />
+      <bean class="com.pentaho.det.impl.endpoints.Preview" >
+        <argument ref="previewListener"/>
+      </bean>
     </jaxrs:serviceBeans>
     <jaxrs:providers>
+      <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
+      <!--
       <bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
         <property name="dropRootElement" value="true"/>
         <property name="dropCollectionWrapperElement" value="true"/>
         <property name="serializeAsArray" value="true"/>
         <property name="supportUnwrapped" value="true"/>
       </bean>
+      -->
     </jaxrs:providers>
   </jaxrs:server>
 
