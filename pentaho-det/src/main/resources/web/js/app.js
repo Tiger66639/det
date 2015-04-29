@@ -71,7 +71,10 @@ define(
         $stateProvider
             .state('mainView', {
               url: "/mainView",
-              templateUrl: "partials/pluginView.html"
+              templateUrl: "partials/pluginView.html",
+              controller: function( $scope, previewDataProvider ) {
+                $scope.previewData = previewDataProvider.getDataTable( "stepA" );
+              }
             });
 
       }]);

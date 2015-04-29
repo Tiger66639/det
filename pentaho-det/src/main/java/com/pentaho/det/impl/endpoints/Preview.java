@@ -19,17 +19,17 @@ package com.pentaho.det.impl.endpoints;
 
 import com.pentaho.det.impl.di.PreviewListener;
 import com.pentaho.det.impl.domain.DataTable;
+import com.pentaho.det.impl.endpoints.dto.ColumnDefinitionDTO;
+import com.pentaho.det.impl.endpoints.dto.DataTableDTO;
+import com.pentaho.det.impl.endpoints.dto.RowDTO;
+import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.row.ValueMetaInterface;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,35 +56,29 @@ public class Preview {
   }
 
   @GET
-  @Path( "/steps" )
+  @Path( "/steps/{stepName}" )
   @Produces( MediaType.APPLICATION_JSON )
-  public String getAllStepsPreviewData() {
-    return
-      "[    { \"name\": \"myStep\",    \"rows\": [ 1, 2, 3 ] },"
-        + " { \"name\": \"otherStep\", \"rows\": [ 4, 5, 6 ] }"
-        + " ]";
-  }
-
-  @GET
-  @Path( "/test/{stepName}" )
-  @Produces( MediaType.APPLICATION_JSON )
-  public DataTable getSteoPreviewDataTest( @PathParam( "stepName" ) String stepName ) {
+  public DataTable getStepPreviewDataTest( @PathParam( "stepName" ) String stepName ) {
     return this.previewListener.getPreviewData().get( stepName );
   }
 
   @GET
-  @Path( "/test" )
+  @Path( "/steps" )
   @Produces( MediaType.APPLICATION_JSON )
   public Map<String, DataTable> getPreviewDataTest() {
-   return this.previewListener.getPreviewData();
+    return this.previewListener.getPreviewData();
   }
 
   @GET
-  @Path( "/steps/{stepName}" )
+  @Path( "/dataTable/{id}" )
   @Produces( MediaType.APPLICATION_JSON )
-  public String getStepPreviewData( @PathParam( "stepName" ) String stepName ) {
-    return "{ \"name\": \"" + stepName + "\",  \"rows\": [ 1, 2, 3 ] }";
+  public DataTableDTO getDataTable( @PathParam( "id" ) String id ) {
+    DataTable dataTable = this.getStepPreviewDataTest( id );
+    DataTableDTO dataTableDTO = new DataTableDTO( dataTable );
+    return dataTableDTO;
   }
+
+
   // endregion
 
 }

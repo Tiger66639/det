@@ -23,7 +23,7 @@ define(
       // TODO: remove "provider" from previewDataProvider
       function applicationController( $scope, $state, previewDataProvider ) {
 
-        $scope.previewStepsData = previewDataProvider.getPreviewData();
+        //$scope.previewStepsData = previewDataProvider.getPreviewData();
 
         $scope.pluginStates = $state.get();
 

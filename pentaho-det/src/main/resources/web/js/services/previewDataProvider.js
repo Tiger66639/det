@@ -26,15 +26,28 @@ define(
       function previewDataProviderService( $resource ) {
 
         var baseUrl = '/cxf/DataExplorerTool/preview';
-        var PreviewData = $resource( baseUrl + '/steps/:stepName',
-            { stepName: '@name' } );
+        //var PreviewData = $resource( baseUrl + '/steps/:stepName', { stepName: '@name' } );
+        var PreviewData = $resource( baseUrl + '/steps/:stepName' );
 
         function getPreviewData() {
           return PreviewData.query( );
         }
 
+        function getStepPreviewData( stepName ) {
+          return PreviewData.get( { stepName: stepName } );
+        }
+
+        var DataTable = $resource( baseUrl + '/dataTable/:id' );
+        function getDataTable( id ) {
+          return DataTable.get( { id: id } );
+        }
+
         return {
-          getPreviewData: getPreviewData
+          getPreviewData: getPreviewData,
+
+          getStepPreviewData: getStepPreviewData,
+
+          getDataTable: getDataTable
         }
       }
 

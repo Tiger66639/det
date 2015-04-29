@@ -1,3 +1,25 @@
 <div>
   <h1>Main View</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>
+          Index
+        </th>
+        <th data-ng-repeat="header in previewData.cols">
+          {{header.label}} ({{header.type}})
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="row in previewData.rows">
+        <td> {{$index}} </td>
+        <td data-ng-repeat="cell in row.c">
+          {{cell.v}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
 </div>
