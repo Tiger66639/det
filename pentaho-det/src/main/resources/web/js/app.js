@@ -43,6 +43,7 @@ define(
     [
       'common-ui/angular',
       'underscorejs',
+      'smart-table',
 
       './services/previewDataProvider',
       './applicationController',
@@ -51,11 +52,11 @@ define(
       'angular-ui-router',
       'common-ui/angular-resource',
     ],
-    function ( angular, _,
+    function ( angular, _, smartTable,
                previewDataProvider, applicationController,
                detPlugins ) {
 
-      var moduleDependencies = [ 'ui.router', 'ngResource' ];
+      var moduleDependencies = [ 'ui.router', 'ngResource', 'smart-table' ];
       var detPluginModuleNames = _.pluck( detPlugins, 'name' );
 
       moduleDependencies = _.union( moduleDependencies, detPluginModuleNames );
@@ -74,6 +75,17 @@ define(
               templateUrl: "partials/pluginView.html",
               controller: function( $scope, previewDataProvider ) {
                 $scope.previewData = previewDataProvider.getDataTable( "stepA" );
+                $scope.getRowValue = function ( columnIdx ) {
+                  return function ( row ) {
+                    if ( row.c && row.c[columnIdx] ) {
+                      return row.c[columnIdx].v;
+                    }
+
+                    return undefined;
+                  }
+                };
+
+                $scope.displayRowCollection = [];
               }
             });
 

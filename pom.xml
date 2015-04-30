@@ -126,6 +126,7 @@
     <module>pentaho-requirejs-service-plugin</module>
     <module>pentaho-pluginA</module>
     <module>pentaho-pluginB</module>
+    <module>smart-table</module>
   </modules>
 
 </project>

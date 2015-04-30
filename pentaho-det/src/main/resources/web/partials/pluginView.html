@@ -1,20 +1,22 @@
 <div>
   <h1>Main View</h1>
 
-  <table>
+  <table class="table table-striped"
+         data-st-table="displayRowCollection"
+         data-st-safe-src="previewData.rows">
     <thead>
       <tr>
         <th>
           Index
         </th>
-        <th data-ng-repeat="header in previewData.cols">
+        <th data-ng-repeat="header in previewData.cols"
+            data-st-sort="getRowValue( {{$index}} )">
           {{header.label}} ({{header.type}})
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr data-ng-repeat="row in previewData.rows">
-        <td> {{$index}} </td>
+      <tr data-ng-repeat="row in displayRowCollection">
         <td data-ng-repeat="cell in row.c">
           {{cell.v}}
         </td>
