@@ -122,6 +122,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>pentaho-det-api</module>
     <module>pentaho-det</module>
     <module>pentaho-requirejs-service-plugin</module>
     <module>pentaho-pluginA</module>
