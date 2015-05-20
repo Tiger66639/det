@@ -18,7 +18,7 @@
 package com.pentaho.det.impl.di;
 
 
-public interface IEventHandler<T> {
-  void handle( T arg );
-  Class<T> getTypeParameter();
+public interface IEventHandler<TContext> {
+  void handle( TContext context );
+  Class<TContext> getTypeParameter();
 }

@@ -138,9 +138,9 @@ public class PreviewListener implements SpoonUiExtenderPluginInterface {
         };
 
     EventHandlerMap eventHandlers = this.getEventHandlers();
-    eventHandlers.putEventHandler( TransGraph.PREVIEW_TRANS, previewStartedHandler );
-    eventHandlers.putEventHandler( TransPreviewDialog.TRANS_PREVIEW_DIALOG,  previewDialogOpenHandler );
-    eventHandlers.putEventHandler( TransPreviewDialog.TRANS_PREVIEW_DIALOG_SET_DATA, previewDialogDataSetHandler );
+    eventHandlers.addEventHandler( TransGraph.PREVIEW_TRANS, previewStartedHandler );
+    eventHandlers.addEventHandler( TransPreviewDialog.TRANS_PREVIEW_DIALOG, previewDialogOpenHandler );
+    eventHandlers.addEventHandler( TransPreviewDialog.TRANS_PREVIEW_DIALOG_SET_DATA, previewDialogDataSetHandler );
 
   }
   // endregion
@@ -148,12 +148,12 @@ public class PreviewListener implements SpoonUiExtenderPluginInterface {
   // region Methods
   @Override
   public Map<Class<?>, Set<String>> respondsTo() {
-    return this.getEventHandlers().getEventMapping();
+    return this.getEventHandlers().respondsTo();
   }
 
   @Override
   public void uiEvent( Object o, String s ) {
-    this.getEventHandlers().handle( o, s );
+    this.getEventHandlers().callHandlers( o, s );
   }
 
 
