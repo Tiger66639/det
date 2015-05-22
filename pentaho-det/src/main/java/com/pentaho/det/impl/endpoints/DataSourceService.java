@@ -15,14 +15,36 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.api.domain;
+package com.pentaho.det.impl.endpoints;
 
-import java.util.List;
+import com.pentaho.det.impl.endpoints.dto.DataSourceDTO;
+import com.pentaho.det.impl.endpoints.dto.DataTableDTO;
 
-public interface IDataTableEntry {
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
-  IDataTable getDataTable();
+@Path( "datasources" )
+public class DataSourceService {
 
-  List<Object> getData();
-  IDataTableEntry setData( List<Object> data );
+  // region Properties
+  // endregion Properties
+
+  // TEMP
+
+  @GET
+  @Path( "/datasources" )
+  public Collection<DataSourceDTO> getDataSources() {
+    return Collections.EMPTY_SET;
+  }
+
+  @GET
+  @Path( "/datasources/{dataSourceId}" )
+  public Collection<DataTableDTO> getData( @PathParam( "dataSourceId" ) String dataSourceId ) {
+    return Collections.emptyList();
+  }
+
 }

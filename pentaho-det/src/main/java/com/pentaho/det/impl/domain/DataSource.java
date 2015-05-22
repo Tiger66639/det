@@ -15,14 +15,17 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.api.domain;
+package com.pentaho.det.impl.domain;
 
-import java.util.List;
+import com.pentaho.det.api.domain.IDataSource;
+import com.pentaho.det.api.domain.IDataTable;
 
-public interface IDataTableEntry {
+public class DataSource implements IDataSource {
 
-  IDataTable getDataTable();
 
-  List<Object> getData();
-  IDataTableEntry setData( List<Object> data );
+  @Override
+  public IDataTable getData() {
+    return null;
+  }
+
 }

@@ -18,11 +18,12 @@
 package com.pentaho.det.api.domain;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IDataTable {
 
-  // TODO should be unique by name => use Map / Set ?
-  List<IField> getFields();
+  // TODO should be unique by name => use Map / Set ? Sets and Maps are not ordered.
+  Set<IField> getFields();
 
   List<IDataTableEntry> getEntries();
 

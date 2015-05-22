@@ -19,32 +19,39 @@ package com.pentaho.det.impl.domain;
 
 import com.pentaho.det.api.domain.IDataTable;
 import com.pentaho.det.api.domain.IDataTableEntry;
-import com.pentaho.det.api.domain.IField;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class DataTable implements IDataTable {
+public class DataTableEntry implements IDataTableEntry {
 
   // region Properties
-  @Override public Set<IField> getFields() {
-    return this.fields;
+  @Override public IDataTable getDataTable() {
+    return this.dataTable;
   }
-  private Set<IField> fields;
+  public DataTableEntry setDataTable( IDataTable dataTable ) {
+    this.dataTable = dataTable;
+    return this;
+  }
+  private IDataTable dataTable;
 
-  @Override public List<IDataTableEntry> getEntries() {
-    return this.entries;
+  @Override public List<Object> getData() {
+    return this.data;
   }
-  private List<IDataTableEntry> entries;
+  public DataTableEntry setData( List<Object> data ) {
+    this.data = data;
+    return this;
+  }
+  private List<Object> data;
   // endregion
 
   // region Constructors
-  public DataTable() {
-    // TODO: Depency injection?
-    this.fields = new HashSet<>();
-    this.entries = new ArrayList<>();
+  public DataTableEntry() {
+    this.setData( new ArrayList<>() );
+  }
+
+  public DataTableEntry( List<Object> data ) {
+    this.setData( data );
   }
   // endregion
 }

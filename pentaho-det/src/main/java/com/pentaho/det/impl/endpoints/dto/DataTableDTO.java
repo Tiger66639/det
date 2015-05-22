@@ -17,7 +17,10 @@
 
 package com.pentaho.det.impl.endpoints.dto;
 
-import com.pentaho.det.impl.domain.DataTable;
+import com.pentaho.det.api.domain.IDataTable;
+import com.pentaho.det.api.domain.IDataTableEntry;
+import com.pentaho.det.api.domain.IField;
+//import com.pentaho.det.impl.domain.DataTableOld;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
@@ -42,7 +45,8 @@ public final class DataTableDTO {
     this.rows = new ArrayList<>();
   }
 
-  public DataTableDTO( DataTable dataTable ) {
+  /*
+  public DataTableDTO( DataTableOld dataTable ) {
     this();
 
     if( dataTable != null ) {
@@ -58,6 +62,23 @@ public final class DataTableDTO {
       for ( int iRow = 0; iRow < rows.size(); iRow++ ) {
         RowDTO rowDto = new RowDTO( rows.get( iRow ) );
         this.rows.add( iRow, rowDto );
+      }
+    }
+
+  }
+*/
+  public DataTableDTO( IDataTable dataTable ) {
+    this();
+
+    if( dataTable != null ) {
+      for ( IField field : dataTable.getFields() ) {
+        ColumnDefinitionDTO columnDefinitionDTO = new ColumnDefinitionDTO( field.getType(), field.getName() );
+        this.columnDefinitions.add( columnDefinitionDTO );
+      }
+
+      for ( IDataTableEntry dataTableEntry : dataTable.getEntries() ) {
+        RowDTO rowDto = new RowDTO( dataTableEntry.getData().toArray() );
+        this.rows.add( rowDto );
       }
     }
 

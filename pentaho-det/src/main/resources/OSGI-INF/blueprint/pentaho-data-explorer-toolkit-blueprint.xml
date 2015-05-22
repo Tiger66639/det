@@ -29,26 +29,61 @@
   <!-- END: Configuration -->
 
   <!-- Spoon Plugin -->
-  <bean id="DataExplorerToolSpoonPlugin" class="com.pentaho.det.impl.di.DataExplorerToolPlugin"
+<!--
+  <bean id="DataExplorerToolSpoonPlugin"
+        class="com.pentaho.det.impl.di.DataExplorerToolPlugin"
         scope="singleton">
     <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonPluginType"/>
   </bean>
+-->
 
-
+<!--
   <bean id="previewListener"
         class="com.pentaho.det.impl.di.PreviewListener"
         scope="singleton">
     <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonUiExtenderPluginType"/>
   </bean>
+-->
 
+
+  <bean id="dataSourceProviderAggregatorBean"
+        class="com.pentaho.det.impl.domain.DataSourceProviderAggregator"
+        scope="singleton">
+  </bean>
+
+  <reference-list id="dataSourceProviderList"
+                  interface="com.pentaho.det.api.services.IDataSourceProvider"
+                  availability="optional">
+    <reference-listener ref="dataSourceProviderAggregatorBean"
+                        bind-method="addDataSourceProvider"
+                        unbind-method="removeDataSourceProvider"/>
+  </reference-list>
+
+  <bean id="previewDataSourceProviderBean"
+        class="com.pentaho.det.impl.di.PreviewDataSourceProvider"
+        scope="singleton">
+    <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonUiExtenderPluginType"/>
+  </bean>
+
+  <service id="previewDataSourceProviderService"
+           interface="com.pentaho.det.api.services.IDataSourceProvider"
+           ref="previewDataSourceProviderBean">
+  </service>
+
+  <!--
+    <service id="detNotifierWithHistory" ref="previewListener"
+             interface="org.pentaho.osgi.notification.api.NotifierWithHistory"/>
+  -->
+
+  <!-- Endpoints -->
   <cxf:bus id="DataExplorerToolImplBus">
-
   </cxf:bus>
 
   <jaxrs:server address="/DataExplorerTool" id="dataExplorerToolService">
     <jaxrs:serviceBeans>
       <bean class="com.pentaho.det.impl.endpoints.Preview" >
-        <argument ref="previewListener"/>
+        <!--argument ref="previewListener"/-->
+        <property name="dataSourceProvider" ref="dataSourceProviderAggregatorBean"/>
       </bean>
     </jaxrs:serviceBeans>
     <jaxrs:providers>
@@ -75,5 +110,18 @@
       <property name="path" value="/web"/>
     </bean>
   </service>
+
+
+
+<!--
+  <service interface="javax.servlet.http.HttpServlet">
+    <service-properties>
+      <entry key="alias" value="/bus"/>
+      <entry key="org.atmosphere.cpr.packages" value="com.pentaho.det.impl.endpoints"/>
+    </service-properties>
+    <bean class="org.atmosphere.cpr.AtmosphereServlet">
+    </bean>
+  </service>
+-->
 
 </blueprint>

@@ -49,6 +49,11 @@ public final class ColumnDefinitionDTO {
     this( getColumnType( valueMetaInterface ), label );
   }
 
+  public ColumnDefinitionDTO( String type, String label ) {
+    this( getColumnType( type ), label );
+  }
+
+
   private static ColumnType getColumnType( ValueMetaInterface valueMetaInterface ) {
     int valueType = valueMetaInterface.getType();
     switch ( valueType ) {
@@ -64,6 +69,28 @@ public final class ColumnDefinitionDTO {
         return ColumnType.DATE;
       default:
         throw new IllegalArgumentException( "Unknown value meta interface type: " + valueType );
+    }
+  }
+
+  // TODO converter
+  private static ColumnType getColumnType( String type ) {
+    if ( type == null ) {
+      throw new IllegalArgumentException( "Invalid null type." );
+    }
+
+    switch ( type.toUpperCase() ) {
+      case "BIGNUMBER":
+      case "INTEGER":
+      case "NUMBER":
+        return ColumnType.NUMBER;
+      case "BOOLEAN":
+        return ColumnType.BOOLEAN;
+      case "STRING":
+        return ColumnType.STRING;
+      case "DATE":
+        return ColumnType.DATE;
+      default:
+        throw new IllegalArgumentException( "Unknown field type: " + type );
     }
   }
 

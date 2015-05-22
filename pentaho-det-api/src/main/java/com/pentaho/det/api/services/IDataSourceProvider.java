@@ -26,6 +26,6 @@ public interface IDataSourceProvider {
   /***
    * @return all provided data sources
    */
-  Map<String, IDataSource> getDataSources();
+  Map<String, ? extends IDataSource> getDataSources();
 
 }

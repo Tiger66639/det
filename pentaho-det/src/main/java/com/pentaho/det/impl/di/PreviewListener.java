@@ -82,11 +82,12 @@ public class PreviewListener implements SpoonUiExtenderPluginInterface {
 
     @Override public void rowWrittenEvent( RowMetaInterface rowMetaInterface, Object[] objects )
       throws KettleStepException {
-
+/*
       DataTable stepDataTable = PreviewListener.this.getPreviewData().get( this.stepName );
 
       stepDataTable.getRows().add( Arrays.copyOf(  objects, rowMetaInterface.size() ) );
       stepDataTable.setRowMetaInterface( rowMetaInterface );
+      */
     }
 
     @Override public void errorRowWrittenEvent( RowMetaInterface rowMetaInterface, Object[] objects )
@@ -110,10 +111,11 @@ public class PreviewListener implements SpoonUiExtenderPluginInterface {
             for ( final StepMeta stepMeta : stepDebugMetaMap.keySet() ) {
               // TODO: use step ID instead of name
               String stepName = stepMeta.getName();
+              /*
               DataTable dataTable = new DataTable();
               dataTable.setRows( Collections.synchronizedList( new ArrayList<Object[]>() ) );
-
               previewListener.getPreviewData().put( stepName, dataTable );
+*/
 
               PreviewRowListener rowListener = previewListener.new PreviewRowListener( stepName );
               for ( StepInterface baseStep : trans.findBaseSteps( stepName ) ) {

@@ -17,35 +17,55 @@
 
 package com.pentaho.det.impl.endpoints;
 
+import com.pentaho.det.api.domain.IDataSource;
+import com.pentaho.det.api.domain.IDataTable;
+import com.pentaho.det.api.services.IDataSourceProvider;
 import com.pentaho.det.impl.di.PreviewListener;
-import com.pentaho.det.impl.domain.DataTable;
-import com.pentaho.det.impl.endpoints.dto.ColumnDefinitionDTO;
+import com.pentaho.det.impl.endpoints.dto.DataSourceDTO;
 import com.pentaho.det.impl.endpoints.dto.DataTableDTO;
-import com.pentaho.det.impl.endpoints.dto.RowDTO;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.core.row.ValueMetaInterface;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 @Path( "preview" )
 public class Preview {
 
   // region Properties
-  PreviewListener previewListener;
+  private PreviewListener previewListener;
+
+
+  public IDataSourceProvider getDataSourceProvider() {
+    return this.dataSourceProvider;
+  }
+  public void setDataSourceProvider( IDataSourceProvider dataSourceProvider ) {
+    this.dataSourceProvider = dataSourceProvider;
+  }
+  private IDataSourceProvider dataSourceProvider;
+
   // endregion
 
   // region Constructors
+  /*
   public Preview( PreviewListener previewListener ) {
     this.previewListener = previewListener;
   }
-  // endregion
+  */
 
+  public Preview() {
+
+  }
+
+  // endregion
 
   // region Methods
   @GET
@@ -55,6 +75,7 @@ public class Preview {
     return "Hello from Data Explorer Tool";
   }
 
+  /*
   @GET
   @Path( "/steps/{stepName}" )
   @Produces( MediaType.APPLICATION_JSON )
@@ -77,7 +98,52 @@ public class Preview {
     DataTableDTO dataTableDTO = new DataTableDTO( dataTable );
     return dataTableDTO;
   }
+  */
 
+
+  @GET
+  @Produces( MediaType.APPLICATION_JSON )
+  @Path( "/dataSources" )
+  public Collection<DataSourceDTO> getDataSources() {
+    Collection<DataSourceDTO> dataSourceDTOs = new ArrayList<>();
+    for ( Map.Entry<String, ? extends IDataSource> entry : this.getDataSourceProvider().getDataSources().entrySet() ) {
+      DataSourceDTO dataSourceDTO = new DataSourceDTO().setUuid( entry.getKey() );
+      dataSourceDTOs.add( dataSourceDTO );
+    }
+    return dataSourceDTOs;
+  }
+
+  @GET
+  @Produces( MediaType.APPLICATION_JSON )
+  @Path( "/dataSources/{dataSourceId}" )
+  public DataSourceDTO getDataSource( @PathParam( "dataSourceId" ) String dataSourceId,
+                                      @Context final HttpServletResponse response ) {
+    IDataSource dataSource = this.getDataSourceProvider().getDataSources().get( dataSourceId );
+    if ( dataSource == null ) {
+      response.setStatus( Response.Status.NOT_FOUND.getStatusCode() );
+      return null;
+    }
+
+    DataSourceDTO dataSourceDTO = new DataSourceDTO().setUuid( dataSourceId );
+    return dataSourceDTO;
+  }
+
+  @GET
+  @Produces( MediaType.APPLICATION_JSON )
+  @Path( "/dataSources/{dataSourceId}/data" )
+  public DataTableDTO getDataSourceData( @PathParam( "dataSourceId" ) String dataSourceId,
+                                         @Context final HttpServletResponse response ) {
+    // TODO optimize for DataSourceProviderAggregator?
+    IDataSource dataSource = this.getDataSourceProvider().getDataSources().get( dataSourceId );
+    if ( dataSource == null ) {
+      response.setStatus( Response.Status.NOT_FOUND.getStatusCode() );
+      return null;
+    }
+
+    IDataTable dataTable = dataSource.getData();
+    DataTableDTO dataTableDTO = new DataTableDTO( dataTable );
+    return dataTableDTO;
+  }
 
   // endregion
 

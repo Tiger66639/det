@@ -15,14 +15,25 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.api.domain;
+package com.pentaho.det.impl.endpoints.dto;
 
-import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
 
-public interface IDataTableEntry {
+public final class DataSourceDTO {
 
-  IDataTable getDataTable();
+  // region Properties
+  @XmlElement( name = "uuid" )
+  public String getUuid() {
+    return this.uuid;
+  }
+  public DataSourceDTO setUuid( String uuid ) {
+    this.uuid = uuid;
+    return this;
+  }
+  private String uuid;
+  // endregion
 
-  List<Object> getData();
-  IDataTableEntry setData( List<Object> data );
+  // region Constructors
+  // endregion
+
 }

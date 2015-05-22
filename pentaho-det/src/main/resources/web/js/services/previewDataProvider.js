@@ -27,7 +27,7 @@ define(
 
         var baseUrl = '/cxf/DataExplorerTool/preview';
         //var PreviewData = $resource( baseUrl + '/steps/:stepName', { stepName: '@name' } );
-        var PreviewData = $resource( baseUrl + '/steps/:stepName' );
+        var PreviewData = $resource( baseUrl + '/dataSources/:stepName/data' );
 
         function getPreviewData() {
           return PreviewData.query( );
@@ -37,7 +37,7 @@ define(
           return PreviewData.get( { stepName: stepName } );
         }
 
-        var DataTable = $resource( baseUrl + '/dataTable/:id' );
+        var DataTable = $resource( baseUrl + '/dataSources/:id/data' );
         function getDataTable( id ) {
           return DataTable.get( { id: id } );
         }
