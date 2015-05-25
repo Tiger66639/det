@@ -31,7 +31,7 @@ import org.pentaho.di.trans.step.RowAdapter;
 import org.pentaho.di.trans.step.StepInterface;
 
 import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 
 public class StepPreviewDataSource implements IDataSource {
 
@@ -50,7 +50,7 @@ public class StepPreviewDataSource implements IDataSource {
       Object[] rowDataTrimmed = Arrays.copyOf( rowData, rowMeta.size() );
       IDataTableEntry entry = new DataTableEntry( Arrays.asList( rowDataTrimmed ) );
       this.dataTable.getEntries().add( entry );
-      Set<IField> fields = this.dataTable.getFields();
+      List<IField> fields = this.dataTable.getFields();
       // check if fields have been set
       if ( fields.size() == 0 ) { // TODO: better way to check if fields have been initialized
         for ( ValueMetaInterface valueMeta : rowMeta.getValueMetaList() ) {

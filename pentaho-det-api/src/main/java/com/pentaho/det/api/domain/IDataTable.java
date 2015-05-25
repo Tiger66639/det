@@ -23,7 +23,7 @@ import java.util.Set;
 public interface IDataTable {
 
   // TODO should be unique by name => use Map / Set ? Sets and Maps are not ordered.
-  Set<IField> getFields();
+  List<IField> getFields();
 
   List<IDataTableEntry> getEntries();
 

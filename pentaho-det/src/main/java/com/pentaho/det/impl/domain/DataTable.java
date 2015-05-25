@@ -24,15 +24,14 @@ import com.pentaho.det.api.domain.IField;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class DataTable implements IDataTable {
 
   // region Properties
-  @Override public Set<IField> getFields() {
+  @Override public List<IField> getFields() {
     return this.fields;
   }
-  private Set<IField> fields;
+  private List<IField> fields;
 
   @Override public List<IDataTableEntry> getEntries() {
     return this.entries;
@@ -43,7 +42,7 @@ public class DataTable implements IDataTable {
   // region Constructors
   public DataTable() {
     // TODO: Depency injection?
-    this.fields = new HashSet<>();
+    this.fields = new ArrayList<>();
     this.entries = new ArrayList<>();
   }
   // endregion
