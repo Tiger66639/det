@@ -20,7 +20,6 @@ package com.pentaho.det.impl.endpoints;
 import com.pentaho.det.api.domain.IDataSource;
 import com.pentaho.det.api.domain.IDataTable;
 import com.pentaho.det.api.services.IDataSourceProvider;
-import com.pentaho.det.impl.di.PreviewListener;
 import com.pentaho.det.impl.endpoints.dto.DataSourceDTO;
 import com.pentaho.det.impl.endpoints.dto.DataTableDTO;
 
@@ -34,16 +33,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 @Path( "preview" )
 public class Preview {
 
   // region Properties
-  private PreviewListener previewListener;
-
-
   public IDataSourceProvider getDataSourceProvider() {
     return this.dataSourceProvider;
   }
@@ -55,12 +50,6 @@ public class Preview {
   // endregion
 
   // region Constructors
-  /*
-  public Preview( PreviewListener previewListener ) {
-    this.previewListener = previewListener;
-  }
-  */
-
   public Preview() {
 
   }
@@ -75,30 +64,6 @@ public class Preview {
     return "Hello from Data Explorer Tool";
   }
 
-  /*
-  @GET
-  @Path( "/steps/{stepName}" )
-  @Produces( MediaType.APPLICATION_JSON )
-  public DataTable getStepPreviewDataTest( @PathParam( "stepName" ) String stepName ) {
-    return this.previewListener.getPreviewData().get( stepName );
-  }
-
-  @GET
-  @Path( "/steps" )
-  @Produces( MediaType.APPLICATION_JSON )
-  public Map<String, DataTable> getPreviewDataTest() {
-    return this.previewListener.getPreviewData();
-  }
-
-  @GET
-  @Path( "/dataTable/{id}" )
-  @Produces( MediaType.APPLICATION_JSON )
-  public DataTableDTO getDataTable( @PathParam( "id" ) String id ) {
-    DataTable dataTable = this.getStepPreviewDataTest( id );
-    DataTableDTO dataTableDTO = new DataTableDTO( dataTable );
-    return dataTableDTO;
-  }
-  */
 
 
   @GET

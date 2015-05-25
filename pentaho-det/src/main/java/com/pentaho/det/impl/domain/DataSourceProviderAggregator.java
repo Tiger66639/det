@@ -42,7 +42,6 @@ public class DataSourceProviderAggregator implements IDataSourceProvider {
     return dataSources;
   }
 
-
   // endregion
 
   // region Constructors
