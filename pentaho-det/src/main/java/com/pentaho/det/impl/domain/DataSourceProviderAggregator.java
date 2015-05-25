@@ -29,6 +29,7 @@ import java.util.Map;
 public class DataSourceProviderAggregator implements IDataSourceProvider {
 
   // region Properties
+  // TODO this should be a SET? providers should not be duplicate
   public Collection<IDataSourceProvider> getDataSourceProviders() {
     return this.dataSourceProviders;
   }
