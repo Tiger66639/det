@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SpoonUiExtenderPlugin( id = "pentaho-det-preview-data-source-provider", image = "" )
@@ -40,10 +41,10 @@ public class PreviewDataSourceProvider implements IDataSourceProvider, SpoonUiEx
   // region Inner Definitions
   private static final class RegisterDataSources extends EventHandler<TransDebugMetaWrapper> {
 
-    private final Map<String, StepPreviewDataSource> dataSources;
+    private final Map<UUID, StepPreviewDataSource> dataSources;
 
     // region Constructors
-    public RegisterDataSources( Map<String, StepPreviewDataSource> dataSources ) {
+    public RegisterDataSources( Map<UUID, StepPreviewDataSource> dataSources ) {
       super( TransDebugMetaWrapper.class );
 
       this.dataSources = dataSources;
@@ -60,8 +61,14 @@ public class PreviewDataSourceProvider implements IDataSourceProvider, SpoonUiEx
       for ( final StepMeta stepMeta : stepDebugMetaMap.keySet() ) {
         String stepName = stepMeta.getName();
         for ( StepInterface baseStep : trans.findBaseSteps( stepName ) ) {
+          UUID dataSourceUUID = UUID.randomUUID();
           StepPreviewDataSource dataSource = new StepPreviewDataSource( baseStep );
-          this.dataSources.put( stepName, dataSource );
+          // TODO: set uuid and name
+          /*
+          dataSource.setUUID( dataSourceUUID );
+          dataSource.setName( stepName );
+          */
+          this.dataSources.put( dataSourceUUID, dataSource );
         }
       }
     }
@@ -71,14 +78,14 @@ public class PreviewDataSourceProvider implements IDataSourceProvider, SpoonUiEx
   // endregion
 
   // region Properties
-  public Map<String, StepPreviewDataSource> getDataSources() {
+  public Map<UUID, StepPreviewDataSource> getDataSources() {
     return Collections.unmodifiableMap( this.dataSources );
   }
-  public PreviewDataSourceProvider setDataSources( Map<String, StepPreviewDataSource> dataSources ) {
+  public PreviewDataSourceProvider setDataSources( Map<UUID, StepPreviewDataSource> dataSources ) {
     this.dataSources = dataSources;
     return this;
   }
-  private Map<String, StepPreviewDataSource> dataSources;
+  private Map<UUID, StepPreviewDataSource> dataSources;
 
   private EventHandlerMap getEventHandlers() {
     return this.eventHandlers;
@@ -90,7 +97,7 @@ public class PreviewDataSourceProvider implements IDataSourceProvider, SpoonUiEx
   // region Constructors
   public PreviewDataSourceProvider() {
     // TODO: verify threading
-    Map<String, StepPreviewDataSource> dataSources = new Hashtable<>(  ); //new ConcurrentHashMap<>();
+    Map<UUID, StepPreviewDataSource> dataSources = new Hashtable<>(  ); //new ConcurrentHashMap<>();
     this.setDataSources( dataSources );
 
     this.eventHandlers = new EventHandlerMap();
@@ -99,10 +106,17 @@ public class PreviewDataSourceProvider implements IDataSourceProvider, SpoonUiEx
   // endregion
 
   // region SpoonUiExtenderPluginInterface
+
+  /**
+   * @inheritDoc
+   */
   @Override public Map<Class<?>, Set<String>> respondsTo() {
     return this.getEventHandlers().respondsTo();
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override public void uiEvent( Object o, String s ) {
     this.getEventHandlers().callHandlers( o, s );
   }

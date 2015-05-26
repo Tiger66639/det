@@ -51,11 +51,11 @@ public class DataSourceProviderAggregatorTest {
   public void testGetDataSourcesSingleDataSourceProvider() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
     int numberOfDataSources = 3;
-    Map<String, IDataSource> expectedDataSources = this.createMockDataSourceMap( numberOfDataSources );
+    Map<UUID, IDataSource> expectedDataSources = this.createMockDataSourceMap( numberOfDataSources );
     IDataSourceProvider dataSourceProvider = this.createMockDataSourceProvider( expectedDataSources );
     providerAggregator.addDataSourceProvider( dataSourceProvider );
 
-    Map<String, IDataSource> actualDataSources = providerAggregator.getDataSources();
+    Map<UUID, IDataSource> actualDataSources = providerAggregator.getDataSources();
 
     assertThatMapsEqual( actualDataSources, expectedDataSources );
   }
@@ -67,27 +67,27 @@ public class DataSourceProviderAggregatorTest {
   public void testGetDataSourcesMultipleDataSourceProviders() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
     int numberOfDataSources = 3;
-    Map<String, IDataSource> dataSourcesA = this.createMockDataSourceMap( numberOfDataSources );
+    Map<UUID, IDataSource> dataSourcesA = this.createMockDataSourceMap( numberOfDataSources );
     IDataSourceProvider dataSourceProviderA = this.createMockDataSourceProvider( dataSourcesA );
     providerAggregator.addDataSourceProvider( dataSourceProviderA );
-    Map<String, IDataSource> dataSourcesB = this.createMockDataSourceMap( numberOfDataSources );
+    Map<UUID, IDataSource> dataSourcesB = this.createMockDataSourceMap( numberOfDataSources );
     IDataSourceProvider dataSourceProviderB = this.createMockDataSourceProvider( dataSourcesB );
     providerAggregator.addDataSourceProvider( dataSourceProviderB );
-    Map<String, IDataSource> expectedDataSources = this.joinMaps( dataSourcesA, dataSourcesB );
+    Map<UUID, IDataSource> expectedDataSources = this.joinMaps( dataSourcesA, dataSourcesB );
 
-    Map<String, IDataSource> actualDataSources = providerAggregator.getDataSources();
+    Map<UUID, IDataSource> actualDataSources = providerAggregator.getDataSources();
 
     assertThatMapsEqual( actualDataSources, expectedDataSources );
   }
 
   /**
-   * Tests that the correct {@link IDataSource} is returned by {@link DataSourceProviderAggregator#getDataSource(String)} with the UUID of a {@link IDataSource} that is provided by a {@link IDataSourceProvider} aggregated by the {@link DataSourceProviderAggregator}.
+   * Tests that the correct {@link IDataSource} is returned by {@link DataSourceProviderAggregator#getDataSource(UUID)} with the UUID of a {@link IDataSource} that is provided by a {@link IDataSourceProvider} aggregated by the {@link DataSourceProviderAggregator}.
    */
   @Test
   public void testGetExistingDataSourceFromUUID() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
-    Map<String, IDataSource> expectedDataSources = new HashMap<>();
-    String dataSourceUUID = "dataSourceUUID";
+    Map<UUID, IDataSource> expectedDataSources = new HashMap<>();
+    UUID dataSourceUUID = this.generateUUID();
     IDataSource expectedDataSource = mock( IDataSource.class );
     expectedDataSources.put( dataSourceUUID, expectedDataSource );
 
@@ -100,12 +100,12 @@ public class DataSourceProviderAggregatorTest {
   }
 
   /**
-   * Tests that null is returned by {@link DataSourceProviderAggregator#getDataSource(String)} with an UUID of a {@link IDataSource} that is NOT provided by a {@link IDataSourceProvider} aggregated by the {@link DataSourceProviderAggregator}.
+   * Tests that null is returned by {@link DataSourceProviderAggregator#getDataSource(UUID)} with an UUID of a {@link IDataSource} that is NOT provided by a {@link IDataSourceProvider} aggregated by the {@link DataSourceProviderAggregator}.
    */
   @Test
   public void testGetNonExistingDataSourceFromUUID() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
-    String nonExistingDataSourceUUID = "nonExistingDataSourceId";
+    UUID nonExistingDataSourceUUID = this.generateUUID();
 
     IDataSource actualDataSource = providerAggregator.getDataSource( nonExistingDataSourceUUID );
 
@@ -123,7 +123,7 @@ public class DataSourceProviderAggregatorTest {
 
     providerAggregator.addDataSourceProvider( provider );
 
-    assertThat( providerAggregator.getDataSourceProviders(), contains( provider ));
+    assertThat( providerAggregator.getDataSourceProviders(), contains( provider ) );
   }
 
   /**
@@ -168,8 +168,8 @@ public class DataSourceProviderAggregatorTest {
    * Creates a Map with generated UUIDs for keys and mocked {@link IDataSource} for values
    * @param numberOfDataSources how many {@link IDataSource} to mock
    */
-  private Map<String, IDataSource> createMockDataSourceMap( int numberOfDataSources ) {
-    Map<String, IDataSource> dataSources = new HashMap<>( numberOfDataSources );
+  private Map<UUID, IDataSource> createMockDataSourceMap( int numberOfDataSources ) {
+    Map<UUID, IDataSource> dataSources = new HashMap<>( numberOfDataSources );
     for ( int iDataSource = 0; iDataSource < numberOfDataSources; iDataSource++ ) {
       IDataSource dataSource = mock( IDataSource.class );
       dataSources.put( this.generateUUID(), dataSource );
@@ -182,7 +182,7 @@ public class DataSourceProviderAggregatorTest {
    */
   private IDataSourceProvider createMockDataSourceProvider( int numberOfDataSources ) {
     IDataSourceProvider dataSourceProvider = mock( IDataSourceProvider.class );
-    final Map<String, IDataSource> mockDataSources = this.createMockDataSourceMap( numberOfDataSources );
+    final Map<UUID, IDataSource> mockDataSources = this.createMockDataSourceMap( numberOfDataSources );
     when( dataSourceProvider.getDataSources() ).thenAnswer( new Answer<Object>() {
       @Override public Object answer( InvocationOnMock invocationOnMock ) throws Throwable {
         return mockDataSources;
@@ -194,7 +194,7 @@ public class DataSourceProviderAggregatorTest {
   /**
    * Creates a mock {@link IDataSourceProvider} with the given Map of {@link IDataSource}
    */
-  private IDataSourceProvider createMockDataSourceProvider( final Map<String, IDataSource> dataSources ) {
+  private IDataSourceProvider createMockDataSourceProvider( final Map<UUID, IDataSource> dataSources ) {
     IDataSourceProvider dataSourceProvider = mock( IDataSourceProvider.class );
     when( dataSourceProvider.getDataSources() ).thenAnswer( new Answer<Object>() {
       @Override public Object answer( InvocationOnMock invocationOnMock ) throws Throwable {
@@ -204,8 +204,8 @@ public class DataSourceProviderAggregatorTest {
     return dataSourceProvider;
   }
 
-  private String generateUUID() {
-    return UUID.randomUUID().toString();
+  private UUID generateUUID() {
+    return UUID.randomUUID();
   }
 
   /**

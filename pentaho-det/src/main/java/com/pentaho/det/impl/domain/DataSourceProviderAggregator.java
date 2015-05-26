@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 
 public class DataSourceProviderAggregator implements IDataSourceProvider {
@@ -40,8 +41,8 @@ public class DataSourceProviderAggregator implements IDataSourceProvider {
   /**
    * @return The aggregated Map of the provided {@link IDataSource} by the aggregated {@link IDataSourceProvider}.
    */
-  @Override public Map<String, IDataSource> getDataSources() {
-    Map<String, IDataSource> dataSources = new HashMap<>(  );
+  @Override public Map<UUID, IDataSource> getDataSources() {
+    Map<UUID, IDataSource> dataSources = new HashMap<>(  );
     for ( IDataSourceProvider provider : this.getDataSourceProviders() ) {
       dataSources.putAll( provider.getDataSources() );
     }
@@ -63,7 +64,7 @@ public class DataSourceProviderAggregator implements IDataSourceProvider {
    * @param dataSourceId
    * @return
    */
-  public IDataSource getDataSource( String dataSourceId ) {
+  public IDataSource getDataSource( UUID dataSourceId ) {
     IDataSource dataSource = null;
     for ( IDataSourceProvider provider : this.getDataSourceProviders() ) {
       dataSource = provider.getDataSources().get( dataSourceId );

@@ -18,19 +18,20 @@
 package com.pentaho.det.impl.endpoints.dto;
 
 import javax.xml.bind.annotation.XmlElement;
+import java.util.UUID;
 
 public final class DataSourceDTO {
 
   // region Properties
   @XmlElement( name = "uuid" )
-  public String getUuid() {
+  public UUID getUUID() {
     return this.uuid;
   }
-  public DataSourceDTO setUuid( String uuid ) {
+  public DataSourceDTO setUUID( UUID uuid ) {
     this.uuid = uuid;
     return this;
   }
-  private String uuid;
+  private UUID uuid;
   // endregion
 
   // region Constructors

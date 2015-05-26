@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 @Path( "preview" )
 public class Preview {
@@ -71,8 +72,9 @@ public class Preview {
   @Path( "/dataSources" )
   public Collection<DataSourceDTO> getDataSources() {
     Collection<DataSourceDTO> dataSourceDTOs = new ArrayList<>();
-    for ( Map.Entry<String, ? extends IDataSource> entry : this.getDataSourceProvider().getDataSources().entrySet() ) {
-      DataSourceDTO dataSourceDTO = new DataSourceDTO().setUuid( entry.getKey() );
+    for ( Map.Entry<UUID, ? extends IDataSource> entry : this.getDataSourceProvider().getDataSources().entrySet() ) {
+      // TODO check converstion datasource => datasource dto
+      DataSourceDTO dataSourceDTO = new DataSourceDTO().setUUID( entry.getKey() );
       dataSourceDTOs.add( dataSourceDTO );
     }
     return dataSourceDTOs;
@@ -81,23 +83,25 @@ public class Preview {
   @GET
   @Produces( MediaType.APPLICATION_JSON )
   @Path( "/dataSources/{dataSourceId}" )
-  public DataSourceDTO getDataSource( @PathParam( "dataSourceId" ) String dataSourceId,
+  public DataSourceDTO getDataSource( @PathParam( "dataSourceId" ) UUID dataSourceId,
                                       @Context final HttpServletResponse response ) {
+
     IDataSource dataSource = this.getDataSourceProvider().getDataSources().get( dataSourceId );
     if ( dataSource == null ) {
       response.setStatus( Response.Status.NOT_FOUND.getStatusCode() );
       return null;
     }
 
-    DataSourceDTO dataSourceDTO = new DataSourceDTO().setUuid( dataSourceId );
+    DataSourceDTO dataSourceDTO = new DataSourceDTO().setUUID( dataSourceId );
     return dataSourceDTO;
   }
 
   @GET
   @Produces( MediaType.APPLICATION_JSON )
   @Path( "/dataSources/{dataSourceId}/data" )
-  public DataTableDTO getDataSourceData( @PathParam( "dataSourceId" ) String dataSourceId,
+  public DataTableDTO getDataSourceData( @PathParam( "dataSourceId" ) UUID dataSourceId,
                                          @Context final HttpServletResponse response ) {
+
     // TODO optimize for DataSourceProviderAggregator?
     IDataSource dataSource = this.getDataSourceProvider().getDataSources().get( dataSourceId );
     if ( dataSource == null ) {

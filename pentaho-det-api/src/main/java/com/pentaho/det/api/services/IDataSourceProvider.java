@@ -20,12 +20,15 @@ package com.pentaho.det.api.services;
 import com.pentaho.det.api.domain.IDataSource;
 
 import java.util.Map;
+import java.util.UUID;
 
 public interface IDataSourceProvider {
 
+  // TODO: change Map keys to UUID?
   /***
-   * @return all provided data sources
+   *
+   * @return all provided data sources.
    */
-  Map<String, ? extends IDataSource> getDataSources();
+  Map<UUID, ? extends IDataSource> getDataSources();
 
 }
