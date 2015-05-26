@@ -20,21 +20,26 @@ package com.pentaho.det.impl.domain;
 import com.pentaho.det.api.domain.IDataSource;
 import com.pentaho.det.api.services.IDataSourceProvider;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class DataSourceProviderAggregator implements IDataSourceProvider {
 
   // region Properties
-  // TODO this should be a SET? providers should not be duplicate
-  public Collection<IDataSourceProvider> getDataSourceProviders() {
+  /**
+   * @return the {@link IDataSourceProvider} aggregated by {@link DataSourceProviderAggregator}
+   */
+  public Set<IDataSourceProvider> getDataSourceProviders() {
     return this.dataSourceProviders;
   }
-  private Collection<IDataSourceProvider> dataSourceProviders;
+  private Set<IDataSourceProvider> dataSourceProviders;
 
+  /**
+   * @return The aggregated Map of the provided {@link IDataSource} by the aggregated {@link IDataSourceProvider}.
+   */
   @Override public Map<String, IDataSource> getDataSources() {
     Map<String, IDataSource> dataSources = new HashMap<>(  );
     for ( IDataSourceProvider provider : this.getDataSourceProviders() ) {
@@ -48,7 +53,7 @@ public class DataSourceProviderAggregator implements IDataSourceProvider {
   // region Constructors
   public DataSourceProviderAggregator() {
     // TODO check DI
-    this.dataSourceProviders = new ArrayList<>(  );
+    this.dataSourceProviders = new HashSet<>(  );
   }
   // endregion
 

@@ -20,8 +20,6 @@ package com.pentaho.det.impl.domain;
 import com.pentaho.det.api.domain.IDataSource;
 import com.pentaho.det.api.services.IDataSourceProvider;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,20 +32,23 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Mockito.mock;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class DataSourceProviderAggregatorTest {
 
   // region Tests
 
   /**
-   * Single DataSourceProvider
+   * Tests that all data sources are returned by {@link DataSourceProviderAggregator#getDataSources()} when the {@link DataSourceProviderAggregator} aggregates a single {@link IDataSourceProvider}.
    */
   @Test
-  public void testGetDataSources() {
+  public void testGetDataSourcesSingleDataSourceProvider() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
     int numberOfDataSources = 3;
     Map<String, IDataSource> expectedDataSources = this.createMockDataSourceMap( numberOfDataSources );
@@ -60,7 +61,7 @@ public class DataSourceProviderAggregatorTest {
   }
 
   /**
-   * Multiple DataSourceProviders
+   * Tests that all data sources are returned by {@link DataSourceProviderAggregator#getDataSources()} when the {@link DataSourceProviderAggregator} aggregates a multiple {@link IDataSourceProvider}.
    */
   @Test
   public void testGetDataSourcesMultipleDataSourceProviders() {
@@ -79,8 +80,11 @@ public class DataSourceProviderAggregatorTest {
     assertThatMapsEqual( actualDataSources, expectedDataSources );
   }
 
+  /**
+   * Tests that the correct {@link IDataSource} is returned by {@link DataSourceProviderAggregator#getDataSource(String)} with the UUID of a {@link IDataSource} that is provided by a {@link IDataSourceProvider} aggregated by the {@link DataSourceProviderAggregator}.
+   */
   @Test
-  public void testGetDataSource() {
+  public void testGetExistingDataSourceFromUUID() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
     Map<String, IDataSource> expectedDataSources = new HashMap<>();
     String dataSourceUUID = "dataSourceUUID";
@@ -95,6 +99,23 @@ public class DataSourceProviderAggregatorTest {
     assertThat( actualDataSource, sameInstance( expectedDataSource ) );
   }
 
+  /**
+   * Tests that null is returned by {@link DataSourceProviderAggregator#getDataSource(String)} with an UUID of a {@link IDataSource} that is NOT provided by a {@link IDataSourceProvider} aggregated by the {@link DataSourceProviderAggregator}.
+   */
+  @Test
+  public void testGetNonExistingDataSourceFromUUID() {
+    DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
+    String nonExistingDataSourceUUID = "nonExistingDataSourceId";
+
+    IDataSource actualDataSource = providerAggregator.getDataSource( nonExistingDataSourceUUID );
+
+    assertThat( actualDataSource, nullValue() );
+  }
+
+
+  /**
+   * Tests that {@link DataSourceProviderAggregator#addDataSourceProvider(IDataSourceProvider)} adds a {@link IDataSourceProvider} to the {@link DataSourceProviderAggregator}
+   */
   @Test
   public void testAddDataSourceProvider() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
@@ -105,6 +126,9 @@ public class DataSourceProviderAggregatorTest {
     assertThat( providerAggregator.getDataSourceProviders(), contains( provider ));
   }
 
+  /**
+   * Tests that a {@link IDataSourceProvider} is only added once to the {@link DataSourceProviderAggregator} with multiple calls to {@link DataSourceProviderAggregator#addDataSourceProvider(IDataSourceProvider)}
+   */
   @Test
   public void testAddSourceProviderTwice() {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
@@ -112,11 +136,13 @@ public class DataSourceProviderAggregatorTest {
 
     providerAggregator.addDataSourceProvider( dataSourceProvider );
     providerAggregator.addDataSourceProvider( dataSourceProvider );
-    providerAggregator.addDataSourceProvider( dataSourceProvider );
 
     assertThat( providerAggregator.getDataSourceProviders(), hasSize( 1 ) );
   }
 
+  /**
+   * Tests that {@link DataSourceProviderAggregator#removeDataSourceProvider(IDataSourceProvider)} removes a {@link IDataSourceProvider} from the {@link DataSourceProviderAggregator}
+   */
   @Test
   public void testRemoveDataSourceProvider()  {
     DataSourceProviderAggregator providerAggregator = this.createDataSourceProviderAggregator();
@@ -130,10 +156,18 @@ public class DataSourceProviderAggregatorTest {
   // endregion
 
   // region auxiliary methods
+
+  /**
+   * Method wrapper for the creation of the {@link DataSourceProviderAggregator} to test
+   */
   private DataSourceProviderAggregator createDataSourceProviderAggregator() {
     return new DataSourceProviderAggregator();
   }
 
+  /**
+   * Creates a Map with generated UUIDs for keys and mocked {@link IDataSource} for values
+   * @param numberOfDataSources how many {@link IDataSource} to mock
+   */
   private Map<String, IDataSource> createMockDataSourceMap( int numberOfDataSources ) {
     Map<String, IDataSource> dataSources = new HashMap<>( numberOfDataSources );
     for ( int iDataSource = 0; iDataSource < numberOfDataSources; iDataSource++ ) {
@@ -143,6 +177,9 @@ public class DataSourceProviderAggregatorTest {
     return dataSources;
   }
 
+  /**
+   * Creates a mock {@link IDataSourceProvider} with {@code numberOfDataSources} mocked {@link IDataSource}
+   */
   private IDataSourceProvider createMockDataSourceProvider( int numberOfDataSources ) {
     IDataSourceProvider dataSourceProvider = mock( IDataSourceProvider.class );
     final Map<String, IDataSource> mockDataSources = this.createMockDataSourceMap( numberOfDataSources );
@@ -154,6 +191,9 @@ public class DataSourceProviderAggregatorTest {
     return dataSourceProvider;
   }
 
+  /**
+   * Creates a mock {@link IDataSourceProvider} with the given Map of {@link IDataSource}
+   */
   private IDataSourceProvider createMockDataSourceProvider( final Map<String, IDataSource> dataSources ) {
     IDataSourceProvider dataSourceProvider = mock( IDataSourceProvider.class );
     when( dataSourceProvider.getDataSources() ).thenAnswer( new Answer<Object>() {
@@ -168,6 +208,9 @@ public class DataSourceProviderAggregatorTest {
     return UUID.randomUUID().toString();
   }
 
+  /**
+   * Asserts that all entries of {@code mapA} are in {@code mapB} and that all entries of {@code mapB} are in {@code mapA}.
+   */
   private <K,V> void assertThatMapsEqual( Map<K, V> mapA, Map<K, V> mapB ) {
     Set<Map.Entry<K,V>> entrySetA = mapA.entrySet();
     Set<Map.Entry<K,V>> entrySetB = mapB.entrySet();
@@ -178,11 +221,6 @@ public class DataSourceProviderAggregatorTest {
 
   /**
    * Joins two maps. Duplicate keys receive the value from {@code mapB}
-   * @param mapA
-   * @param mapB
-   * @param <K>
-   * @param <V>
-   * @return
    */
   private <K,V> Map<K, V> joinMaps( Map<K, V> mapA, Map<K, V> mapB ) {
     Map<K, V> joinedMap = new HashMap<>();
