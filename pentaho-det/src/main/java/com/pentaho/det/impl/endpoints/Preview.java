@@ -57,7 +57,7 @@ public class Preview {
 
   // endregion
 
-  // region Methods
+  // region Endpoints
   @GET
   @Path( "/hello" )
   @Produces( MediaType.TEXT_PLAIN )
@@ -65,16 +65,13 @@ public class Preview {
     return "Hello from Data Explorer Tool";
   }
 
-
-
   @GET
   @Produces( MediaType.APPLICATION_JSON )
   @Path( "/dataSources" )
   public Collection<DataSourceDTO> getDataSources() {
     Collection<DataSourceDTO> dataSourceDTOs = new ArrayList<>();
-    for ( Map.Entry<UUID, ? extends IDataSource> entry : this.getDataSourceProvider().getDataSources().entrySet() ) {
-      // TODO check converstion datasource => datasource dto
-      DataSourceDTO dataSourceDTO = new DataSourceDTO().setUUID( entry.getKey() );
+    for ( IDataSource dataSource : this.getDataSourceProvider().getDataSources().values() ) {
+      DataSourceDTO dataSourceDTO = new DataSourceDTO( dataSource );
       dataSourceDTOs.add( dataSourceDTO );
     }
     return dataSourceDTOs;
@@ -82,28 +79,28 @@ public class Preview {
 
   @GET
   @Produces( MediaType.APPLICATION_JSON )
-  @Path( "/dataSources/{dataSourceId}" )
-  public DataSourceDTO getDataSource( @PathParam( "dataSourceId" ) UUID dataSourceId,
+  @Path( "/dataSources/{dataSourceUuidOrName}" )
+  public DataSourceDTO getDataSource( @PathParam( "dataSourceUuidOrName" ) String dataSourceUuidOrName,
                                       @Context final HttpServletResponse response ) {
 
-    IDataSource dataSource = this.getDataSourceProvider().getDataSources().get( dataSourceId );
+    IDataSource dataSource = findDataSourceByIdOrName( this.getDataSourceProvider().getDataSources(), dataSourceUuidOrName );
     if ( dataSource == null ) {
       response.setStatus( Response.Status.NOT_FOUND.getStatusCode() );
       return null;
     }
 
-    DataSourceDTO dataSourceDTO = new DataSourceDTO().setUUID( dataSourceId );
+    DataSourceDTO dataSourceDTO = new DataSourceDTO( dataSource );
     return dataSourceDTO;
   }
 
   @GET
   @Produces( MediaType.APPLICATION_JSON )
-  @Path( "/dataSources/{dataSourceId}/data" )
-  public DataTableDTO getDataSourceData( @PathParam( "dataSourceId" ) UUID dataSourceId,
+  @Path( "/dataSources/{dataSourceUuidOrName}/data" )
+  public DataTableDTO getDataSourceData( @PathParam( "dataSourceUuidOrName" ) String dataSourceUuidOrName,
                                          @Context final HttpServletResponse response ) {
 
-    // TODO optimize for DataSourceProviderAggregator?
-    IDataSource dataSource = this.getDataSourceProvider().getDataSources().get( dataSourceId );
+    IDataSource dataSource = findDataSourceByIdOrName( this.getDataSourceProvider().getDataSources(),
+        dataSourceUuidOrName );
     if ( dataSource == null ) {
       response.setStatus( Response.Status.NOT_FOUND.getStatusCode() );
       return null;
@@ -116,4 +113,37 @@ public class Preview {
 
   // endregion
 
+  // region auxiliary methods
+  /**
+   * Searches for a {@link IDataSource} with the given {@code name}.
+   * @param dataSources The data sources where to search for the data source.
+   * @param name The name to match.
+   * @return The first {@link IDataSource} found with the given {@code name} or {@code null} if no data source is found.
+   */
+  private IDataSource findDataSourceByName( Iterable<? extends IDataSource> dataSources, String name ) {
+    if ( name == null || name.isEmpty() ) {
+      return null;
+    }
+
+    for ( IDataSource dataSource : dataSources ) {
+      if ( name.equals( dataSource.getName() ) ) {
+        return dataSource;
+      }
+    }
+    return null;
+  }
+
+  private IDataSource findDataSourceByIdOrName( Map<UUID, ? extends IDataSource> dataSources, String dataSourceUuidOrName ) {
+    IDataSource dataSource;
+    try {
+      UUID dataSourceUUID = UUID.fromString( dataSourceUuidOrName );
+      dataSource = dataSources.get( dataSourceUUID );
+    } catch ( IllegalArgumentException e ) {
+      // invalid UUID, check if there is a datasource with the given name
+      dataSource = findDataSourceByName( dataSources.values(), dataSourceUuidOrName );
+    }
+    return dataSource;
+  }
+
+  // endregion
 }

@@ -61,14 +61,8 @@ public class PreviewDataSourceProvider implements IDataSourceProvider, SpoonUiEx
       for ( final StepMeta stepMeta : stepDebugMetaMap.keySet() ) {
         String stepName = stepMeta.getName();
         for ( StepInterface baseStep : trans.findBaseSteps( stepName ) ) {
-          UUID dataSourceUUID = UUID.randomUUID();
           StepPreviewDataSource dataSource = new StepPreviewDataSource( baseStep );
-          // TODO: set uuid and name
-          /*
-          dataSource.setUUID( dataSourceUUID );
-          dataSource.setName( stepName );
-          */
-          this.dataSources.put( dataSourceUUID, dataSource );
+          this.dataSources.put( dataSource.getUUID(), dataSource );
         }
       }
     }

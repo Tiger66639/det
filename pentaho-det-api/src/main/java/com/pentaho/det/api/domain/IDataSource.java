@@ -17,10 +17,16 @@
 
 package com.pentaho.det.api.domain;
 
+import java.util.UUID;
+
 /***
  * Something that produces data.
  */
 public interface IDataSource {
+
+  UUID getUUID();
+
+  String getName();
 
   /**
    * @return all data contained in the data source.

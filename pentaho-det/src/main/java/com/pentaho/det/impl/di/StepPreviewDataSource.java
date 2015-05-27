@@ -28,10 +28,12 @@ import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.trans.step.RowAdapter;
+import org.pentaho.di.trans.step.RowListener;
 import org.pentaho.di.trans.step.StepInterface;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class StepPreviewDataSource implements IDataSource {
 
@@ -63,16 +65,47 @@ public class StepPreviewDataSource implements IDataSource {
   // endregion
 
   // region Properties
+  @Override public UUID getUUID() {
+    return this.uuid;
+  }
+  private UUID uuid;
+
+  @Override public String getName() {
+    if ( this.getStep() == null || this.getStep().getStepMeta() == null ) {
+      return null;
+    }
+
+    return this.getStep().getStepMeta().getName();
+  }
+
   @Override public IDataTable getData() {
     return this.dataTable;
   }
   private IDataTable dataTable;
+
+  public StepInterface getStep() {
+    return this.step;
+  }
+  public void setStep( StepInterface step ) {
+    if ( this.step != null ) {
+      step.removeRowListener( this.rowListener );
+      this.clear();
+    }
+
+    this.step = step;
+    this.rowListener = new CacheStepWrittenRowsRowListener( this.dataTable );
+    this.step.addRowListener( this.rowListener );
+  }
+  private StepInterface step;
+
+  private RowListener rowListener;
   // endregion
 
   // region Constructors
   public StepPreviewDataSource( StepInterface step ) {
+    this.uuid = UUID.randomUUID();
     this.dataTable = new DataTable();
-    step.addRowListener( new CacheStepWrittenRowsRowListener( this.dataTable ) );
+    this.setStep( step );
   }
   // endregion
 

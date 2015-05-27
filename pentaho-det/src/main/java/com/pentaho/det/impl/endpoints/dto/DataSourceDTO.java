@@ -17,6 +17,8 @@
 
 package com.pentaho.det.impl.endpoints.dto;
 
+import com.pentaho.det.api.domain.IDataSource;
+
 import javax.xml.bind.annotation.XmlElement;
 import java.util.UUID;
 
@@ -32,9 +34,23 @@ public final class DataSourceDTO {
     return this;
   }
   private UUID uuid;
+
+  @XmlElement( name = "name" )
+  public String getName() {
+    return name;
+  }
+  public DataSourceDTO setName( String name ) {
+    this.name = name;
+    return this;
+  }
+  private String name;
   // endregion
 
   // region Constructors
+  public DataSourceDTO( IDataSource dataSource ) {
+    this.setUUID( dataSource.getUUID() );
+    this.setName( dataSource.getName() );
+  }
   // endregion
 
 }
