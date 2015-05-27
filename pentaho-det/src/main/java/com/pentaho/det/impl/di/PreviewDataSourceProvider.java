@@ -58,6 +58,7 @@ public class PreviewDataSourceProvider implements IDataSourceProvider, SpoonUiEx
       final Trans trans = transDebugMetaWrapper.getTrans();
       TransDebugMeta transDebugMeta = transDebugMetaWrapper.getTransDebugMeta();
       Map<StepMeta, StepDebugMeta> stepDebugMetaMap = transDebugMeta.getStepDebugMetaMap();
+      // for each step being debugged / previewed
       for ( final StepMeta stepMeta : stepDebugMetaMap.keySet() ) {
         String stepName = stepMeta.getName();
         for ( StepInterface baseStep : trans.findBaseSteps( stepName ) ) {

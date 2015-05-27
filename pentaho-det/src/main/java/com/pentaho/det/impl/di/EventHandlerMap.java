@@ -79,16 +79,12 @@ public class EventHandlerMap implements SpoonUiExtenderPluginInterface {
 
       EventType eventType = (EventType) o;
 
-      if ( !contextClass.equals( eventType.contextClass ) ) {
-        return false;
-      }
       return name.equals( eventType.name );
 
     }
 
     @Override public int hashCode() {
-      int result = contextClass.hashCode();
-      result = 31 * result + name.hashCode();
+      int result = name.hashCode();
       return result;
     }
   }
