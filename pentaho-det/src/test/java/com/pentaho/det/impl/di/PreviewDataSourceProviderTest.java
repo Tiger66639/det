@@ -17,7 +17,6 @@
 
 package com.pentaho.det.impl.di;
 
-import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

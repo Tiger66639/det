@@ -40,32 +40,6 @@ import static org.mockito.Mockito.never;
 
 public class EventHandlerMapTest {
 
-
-  // region auxiliary methods
-  private <T> Collection<IEventHandler<T>> createMockEventHandlerCollection( Class<T> clazz, int numberOfEventHandlers ) {
-    Collection<IEventHandler<T>> eventHandlers = new ArrayList<>( numberOfEventHandlers );
-    for ( int iEventHandler = 0; iEventHandler < numberOfEventHandlers; iEventHandler++ ) {
-      IEventHandler<T> eventHandler = createMock( clazz );
-      eventHandlers.add( eventHandler );
-    }
-    return eventHandlers;
-  }
-
-  private <T> void addToEventHandlerMap( EventHandlerMap eventHandlerMap, String eventTypeName, Iterable<IEventHandler<T>> eventHandlers ) {
-    for ( IEventHandler<T> eventHandler : eventHandlers ) {
-      eventHandlerMap.addEventHandler( eventTypeName, eventHandler );
-    }
-  }
-
-  private <T> IEventHandler<T> createMock( Class<T> clazz ) {
-    @SuppressWarnings("unchecked")
-    IEventHandler<T> eventHandler = mock( IEventHandler.class );
-    when( eventHandler.getTypeParameter() ).thenReturn( clazz );
-    return eventHandler;
-  }
-
-  // endregion
-
   // region Tests
 
   /**
@@ -209,7 +183,8 @@ public class EventHandlerMapTest {
     int numberOfEventHandlers = 3;
     Collection<IEventHandler<Integer>> eventHandlersA = createMockEventHandlerCollection( contextType, numberOfEventHandlers );
     addToEventHandlerMap( eventHandlerMap, eventTypeNameA, eventHandlersA );
-    Collection<IEventHandler<Integer>> eventHandlersB = createMockEventHandlerCollection( contextType, numberOfEventHandlers );
+    Collection<IEventHandler<Integer>> eventHandlersB = createMockEventHandlerCollection( contextType,
+      numberOfEventHandlers );
     addToEventHandlerMap( eventHandlerMap, eventTypeNameB, eventHandlersB );
 
     Integer contextObject = 4;
@@ -223,6 +198,31 @@ public class EventHandlerMapTest {
     }
 
   }
+  // endregion
+
+  // region auxiliary methods
+  private <T> Collection<IEventHandler<T>> createMockEventHandlerCollection( Class<T> clazz, int numberOfEventHandlers ) {
+    Collection<IEventHandler<T>> eventHandlers = new ArrayList<>( numberOfEventHandlers );
+    for ( int iEventHandler = 0; iEventHandler < numberOfEventHandlers; iEventHandler++ ) {
+      IEventHandler<T> eventHandler = createMock( clazz );
+      eventHandlers.add( eventHandler );
+    }
+    return eventHandlers;
+  }
+
+  private <T> void addToEventHandlerMap( EventHandlerMap eventHandlerMap, String eventTypeName, Iterable<IEventHandler<T>> eventHandlers ) {
+    for ( IEventHandler<T> eventHandler : eventHandlers ) {
+      eventHandlerMap.addEventHandler( eventTypeName, eventHandler );
+    }
+  }
+
+  private <T> IEventHandler<T> createMock( Class<T> clazz ) {
+    @SuppressWarnings("unchecked")
+    IEventHandler<T> eventHandler = mock( IEventHandler.class );
+    when( eventHandler.getTypeParameter() ).thenReturn( clazz );
+    return eventHandler;
+  }
+
   // endregion
 
 }
