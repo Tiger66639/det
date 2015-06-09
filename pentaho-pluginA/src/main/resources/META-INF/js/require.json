@@ -7,7 +7,7 @@
 
   "config": {
     "service": {
-      "com.pentaho.det.pluginA/js/app": "IDetPlugin"
+      "com.pentaho.det.pluginA/app": "IDetPlugin"
     }
   },
 

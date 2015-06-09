@@ -15,23 +15,31 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-'use strict';
-
 define(
-    function () {
+    [
+      'angular-ui-router' // $state
+    ],
+    function ( ) {
+      "use strict";
 
-      // TODO: remove "provider" from previewDataProvider
-      function applicationController( $scope, $state, previewDataProvider ) {
+      ApplicationController.$inject = [ '$state' ];
+      function ApplicationController( $state )
+      {
+        var viewModel = this;
+        viewModel.pluginStates = [];
 
-        //$scope.previewStepsData = previewDataProvider.getPreviewData();
+        viewModel.title = 'ApplicationController';
+        viewModel.activate = activate;
 
-        $scope.pluginStates = $state.get();
+        activate();
 
+        ////////////////
+
+        function activate() {
+          viewModel.pluginStates = $state.get();
+        }
       }
 
-      applicationController.$inject = [ '$scope', '$state', 'previewDataProvider' ];
-      return applicationController;
-
+      return ApplicationController;
     }
 );
-

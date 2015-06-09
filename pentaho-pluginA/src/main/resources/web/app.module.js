@@ -15,27 +15,43 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-'use-strict';
 
 define(
     [
-      'common-ui/angular'
+      'common-ui/angular',
+      'dataTable/dataTable.controller'
     ],
-    function ( angular ) {
+    function ( angular, DataTableController
 
-      var plugin = angular.module( 'com.pentaho.det.pluginA', [ 'ui.router' ] );
+    ) {
+      "use strict";
 
+      var dataModule = angular.module( 'com.pentaho.det.data', [ 'ui.router', 'smart-table' ]);
+
+      /*
       plugin.config( [ '$stateProvider', '$urlRouterProvider',
         function( $stateProvider ) {
 
         $stateProvider
-            .state( 'pluginA', {
+            .state( 'Data', {
               url: "/pluginA",
               templateUrl: "/DataExplorerToolPluginA/web/partials/plugin.html"
             });
-
       }]);
+      */
 
-      return plugin;
+      var moduleStates = [
+        {
+          name: 'Data',
+          templateUrl: '/DataExplorerToolPluginA/web/dataTable/dataTable.html',
+          controller: 'com.pentaho.det.data.DataTableController as viewModel'
+        }
+      ];
+
+      return {
+        name: dataModule.name,
+        states: moduleStates,
+        module: dataModule
+      };
     }
 );

@@ -37,44 +37,81 @@
  * explicitly covering such access.
  */
 
-'use-strict';
-
 define(
     [
       'common-ui/angular',
       'underscorejs',
-      'smart-table',
 
-      './services/previewDataProvider',
-      './applicationController',
+      './app.controller',
+      //'text!./app.html',
 
       'service!IDetPlugin',
       'angular-ui-router',
+      'ui-router-state-helper',
       'common-ui/angular-resource',
     ],
-    function ( angular, _, smartTable,
-               previewDataProvider, applicationController,
+    function ( angular,
+               _,
+               applicationController,
+               //appHtml,
                detPlugins ) {
+      "use strict";
 
-      var moduleDependencies = [ 'ui.router', 'ngResource', 'smart-table' ];
+      var moduleName = 'detApp';
+      var moduleDependencies = [ 'ui.router', 'ui.router.stateHelper', 'ngResource' ];
       var detPluginModuleNames = _.pluck( detPlugins, 'name' );
 
       moduleDependencies = _.union( moduleDependencies, detPluginModuleNames );
 
-      var detApp = angular.module( 'detApp', moduleDependencies );
+      var moduleRootStates = _.pluck( detPlugins, 'states' );
 
-      detApp.config( [ '$stateProvider', '$urlRouterProvider',
-        function( $stateProvider, $urlRouterProvider ) {
+      var detApp = angular
+          .module( moduleName, moduleDependencies )
+          //.controller( moduleName + 'ApplicationController', applicationController )
+          .config( config )
+          .run( function ( $rootScope ) {
+            //var $rootScope = angular.element(document.querySelectorAll("[ui-view]")[0]).injector().get('$rootScope');
 
-        // For any unmatched url, send to /route1
-        $urlRouterProvider.otherwise( "/mainView" );
+            $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
+              console.log('$stateChangeStart to '+toState.to+'- fired when the transition begins. toState,toParams : \n',toState, toParams);
+            });
 
+            $rootScope.$on('$stateChangeError',function(event, toState, toParams, fromState, fromParams){
+              console.log('$stateChangeError - fired when an error occurs during transition.');
+              console.log(arguments);
+            });
+
+            $rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
+              console.log('$stateChangeSuccess to '+toState.name+'- fired once the state transition is complete.');
+            });
+
+            $rootScope.$on('$viewContentLoaded',function(event){
+              console.log('$viewContentLoaded - fired after dom rendered',event);
+            });
+
+            $rootScope.$on('$stateNotFound',function(event, unfoundState, fromState, fromParams){
+              console.log('$stateNotFound '+unfoundState.to+'  - fired when a state cannot be found by its name.');
+              console.log(unfoundState, fromState, fromParams);
+            });
+          });
+
+
+
+
+
+      config.$inject = [ 'stateHelperProvider', '$urlRouterProvider' , '$stateProvider' ];
+      function config( stateHelperProvider, $urlRouterProvider, $stateProvider ) {
+        var rootURL = '/det';
+        // For any unmatched url, send to root url
+        $urlRouterProvider.otherwise( rootURL );
+
+        /*
         $stateProvider
-            .state('mainView', {
+            .state( 'mainView', {
               url: "/mainView",
               templateUrl: "partials/pluginView.html",
               controller: function( $scope, previewDataProvider ) {
-                $scope.previewData = previewDataProvider.getDataTable( "stepA" );
+                $scope.previewData = previewDataProvider.getDataFromDataSource( "stepA" );
                 $scope.getRowValue = function ( columnIdx ) {
                   return function ( row ) {
                     if ( row.c && row.c[columnIdx] ) {
@@ -88,23 +125,33 @@ define(
                 $scope.displayRowCollection = [];
               }
             });
+        */
 
-      }]);
-
-      // dependency is injected by argument name convention
-      detApp.factory( 'previewDataProvider', previewDataProvider );
-
-      detApp.controller( 'applicationController',  applicationController );
-
+        stateHelperProvider
+        //$stateProvider
+            .state( {
+              //abstract: true,
+              name: 'detApp',
+              url: rootURL,
+              templateUrl: 'js/app.html',
+              //template: appHtml,
+              controller: applicationController,
+              controllerAs: 'appViewModel',
+              children: moduleRootStates
+            });
+      }
 
       return {
         module: detApp,
 
         init: function () {
           angular.element( document ).ready( function () {
-            angular.bootstrap( document, [ 'detApp' ]);
+            angular.bootstrap( document, [ moduleName ]);
+
+
           });
         }
       };
+
     }
 );

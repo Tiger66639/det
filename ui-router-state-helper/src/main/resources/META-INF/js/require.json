@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "ui-router-state-helper": "/uiRouterStateHelper/web/js/stateHelper"
+  },
+
+  "shim": {
+    "ui-router-state-helper": {
+      "deps": [ "common-ui/angular" ]
+    }
+  }
+}
