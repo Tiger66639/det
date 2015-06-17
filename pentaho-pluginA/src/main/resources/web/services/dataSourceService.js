@@ -17,19 +17,11 @@
 
 define(
     [
-        '../app.module',
-        'common-ui/angular-resource'
     ],
-    function ( app,
-               $resource
-    ) {
+    function () {
       "use strict";
 
-      var ngModuleName = app.name;
-      app.module.factory( ngModuleName + 'dataSourceService', dataSourceService );
-
-      dataSourceService.$inject = [ $resource.name ];
-
+      dataSourceService.$inject = [ '$resource' ];
       function dataSourceService( $resource ) {
         // TODO: resolve base url ?
         var baseUrl = '/cxf/DataExplorerTool/preview';

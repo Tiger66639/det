@@ -1,13 +1,13 @@
 {
-  "deps": [ "angular" ],
-
   "paths": {
     "com.pentaho.det": "DataExplorerTool/web"
   },
 
-  "shim": {
+  "map": {
+    "*": {
+      "angular": "common-ui/angular",
+      "angular-resource": "common-ui/angular-resource"
+    }
   },
 
-  "map": {
-  }
 }

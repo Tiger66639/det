@@ -18,15 +18,31 @@
 
 define(
     [
-      'common-ui/angular',
-      'dataTable/dataTable.controller'
+      'angular',
+// TODO: add resource
+      './dataTable/dataTable.controller',
+      './services/dataSourceService',
+
+      'angular-ui-router',
+      'angular-resource',
+      'smart-table'
+
     ],
-    function ( angular, DataTableController
+    function ( angular, DataTableController, dataSourceService
 
     ) {
       "use strict";
 
-      var dataModule = angular.module( 'com.pentaho.det.data', [ 'ui.router', 'smart-table' ]);
+      var ngModuleName = 'com.pentaho.det.data';
+
+      var dataModule = angular
+          .module( ngModuleName, [ 'ui.router', 'smart-table', 'ngResource' ] )
+          .factory( ngModuleName + '.dataSourceService', dataSourceService );
+
+
+      // Controller registered in the state
+      // app.module.controller( ngModuleName + '.DataTableController', DataTableController );
+
 
       /*
       plugin.config( [ '$stateProvider', '$urlRouterProvider',
@@ -43,8 +59,9 @@ define(
       var moduleStates = [
         {
           name: 'Data',
-          templateUrl: '/DataExplorerToolPluginA/web/dataTable/dataTable.html',
-          controller: 'com.pentaho.det.data.DataTableController as viewModel'
+          templateUrl: '/DataExplorerToolPluginA/web/dataTable/dataTable.html', // TODO: relative, embedable path
+          controller: DataTableController,
+          controllerAs: 'viewModel'
         }
       ];
 

@@ -19,7 +19,7 @@
 
 define(
     [
-      'common-ui/angular'
+      'angular'
     ],
     function ( angular ) {
 

@@ -1,8 +1,6 @@
 {
-  "deps": [ "common-ui/angular" ],
-
   "paths": {
-    "smart-table": "/smartTable/web/js/smartTable"
+    "smart-table": "smartTable/web/js/smartTable"
   }
 
 }

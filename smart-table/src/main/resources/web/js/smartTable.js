@@ -6,7 +6,7 @@
 
 define(
     [
-      'common-ui/angular'
+      'angular'
     ],
     function ( ng ){
       'use strict';

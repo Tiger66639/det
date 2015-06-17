@@ -22,8 +22,8 @@ define(
     function ( ) {
       "use strict";
 
-      ApplicationController.$inject = [ '$state' ];
-      function ApplicationController( $state )
+      ApplicationController.$inject = [ 'moduleStates' ];
+      function ApplicationController( moduleStates )
       {
         var viewModel = this;
         viewModel.pluginStates = [];
@@ -36,7 +36,7 @@ define(
         ////////////////
 
         function activate() {
-          viewModel.pluginStates = $state.get();
+          viewModel.pluginStates = moduleStates;
         }
       }
 

@@ -1,5 +1,5 @@
 {
   "paths": {
-    "service": "/requirejs-service-plugin/js/service"
+    "service": "requirejs-service-plugin/js/service"
   }
 }

@@ -39,21 +39,22 @@
 
 define(
     [
-      'common-ui/angular',
+      'angular',
       'underscorejs',
 
       './app.controller',
-      //'text!./app.html',
+      'text!./app.html',
 
       'service!IDetPlugin',
+
       'angular-ui-router',
       'ui-router-state-helper',
-      'common-ui/angular-resource',
+      'angular-resource',
     ],
     function ( angular,
                _,
                applicationController,
-               //appHtml,
+               appHtml,
                detPlugins ) {
       "use strict";
 
@@ -63,41 +64,43 @@ define(
 
       moduleDependencies = _.union( moduleDependencies, detPluginModuleNames );
 
-      var moduleRootStates = _.pluck( detPlugins, 'states' );
+      var moduleRootStates = _.chain( detPlugins )
+          .pluck( 'states' )
+          .flatten( true )
+          .value();
 
       var detApp = angular
           .module( moduleName, moduleDependencies )
           //.controller( moduleName + 'ApplicationController', applicationController )
           .config( config )
-          .run( function ( $rootScope ) {
-            //var $rootScope = angular.element(document.querySelectorAll("[ui-view]")[0]).injector().get('$rootScope');
+          // TODO: remove debug logs
+          .run( debugStates );
 
-            $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
-              console.log('$stateChangeStart to '+toState.to+'- fired when the transition begins. toState,toParams : \n',toState, toParams);
-            });
+      function debugStates( $rootScope ) {
+        //var $rootScope = angular.element(document.querySelectorAll("[ui-view]")[0]).injector().get('$rootScope');
 
-            $rootScope.$on('$stateChangeError',function(event, toState, toParams, fromState, fromParams){
-              console.log('$stateChangeError - fired when an error occurs during transition.');
-              console.log(arguments);
-            });
+        $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
+          console.log('$stateChangeStart to '+toState.to+'- fired when the transition begins. toState,toParams : \n',toState, toParams);
+        });
 
-            $rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
-              console.log('$stateChangeSuccess to '+toState.name+'- fired once the state transition is complete.');
-            });
+        $rootScope.$on('$stateChangeError',function(event, toState, toParams, fromState, fromParams){
+          console.log('$stateChangeError - fired when an error occurs during transition.');
+          console.log(arguments);
+        });
 
-            $rootScope.$on('$viewContentLoaded',function(event){
-              console.log('$viewContentLoaded - fired after dom rendered',event);
-            });
+        $rootScope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
+          console.log('$stateChangeSuccess to '+toState.name+'- fired once the state transition is complete.');
+        });
 
-            $rootScope.$on('$stateNotFound',function(event, unfoundState, fromState, fromParams){
-              console.log('$stateNotFound '+unfoundState.to+'  - fired when a state cannot be found by its name.');
-              console.log(unfoundState, fromState, fromParams);
-            });
-          });
+        $rootScope.$on('$viewContentLoaded',function(event){
+          console.log('$viewContentLoaded - fired after dom rendered',event);
+        });
 
-
-
-
+        $rootScope.$on('$stateNotFound',function(event, unfoundState, fromState, fromParams){
+          console.log('$stateNotFound '+unfoundState.to+'  - fired when a state cannot be found by its name.');
+          console.log(unfoundState, fromState, fromParams);
+        });
+      }
 
       config.$inject = [ 'stateHelperProvider', '$urlRouterProvider' , '$stateProvider' ];
       function config( stateHelperProvider, $urlRouterProvider, $stateProvider ) {
@@ -127,31 +130,38 @@ define(
             });
         */
 
+        var rootState = {
+          //abstract: true,
+          name: 'detApp',
+          url: rootURL,
+          //templateUrl: 'js/app.html',
+          template: appHtml,
+          controller: applicationController,
+          controllerAs: 'appViewModel',
+          resolve: {
+              moduleStates: function() { return moduleRootStates; }
+          },
+          children: moduleRootStates
+        };
+
         stateHelperProvider
         //$stateProvider
-            .state( {
-              //abstract: true,
-              name: 'detApp',
-              url: rootURL,
-              templateUrl: 'js/app.html',
-              //template: appHtml,
-              controller: applicationController,
-              controllerAs: 'appViewModel',
-              children: moduleRootStates
-            });
+            .state( rootState );
       }
 
       return {
         module: detApp,
 
-        init: function () {
-          angular.element( document ).ready( function () {
-            angular.bootstrap( document, [ moduleName ]);
-
-
-          });
-        }
+        init: detAppInit
       };
+
+      ////////////////////
+
+      function detAppInit( element ) {
+        angular.element( element ).ready( function () {
+          angular.bootstrap( element, [ moduleName ]);
+        });
+      }
 
     }
 );

@@ -1,6 +1,4 @@
 {
-  "deps": [ "angular" ],
-
   "paths": {
     "com.pentaho.det.pluginB": "DataExplorerToolPluginB/web"
   },
@@ -11,9 +9,4 @@
     }
   },
 
-  "shim": {
-  },
-
-  "map": {
-  }
 }

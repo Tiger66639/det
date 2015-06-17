@@ -17,21 +17,11 @@
 
 define(
     [
-        // TODO: use AMD dependencies ?
-        '../app.module',
-
-        'smart-table',
-
-        '../services/dataSourceService.js'
     ],
-
-    function( app ) {
+    function( ) {
       "use strict";
 
-      var ngModuleName = app.module.name;
-      app.module.controller( ngModuleName + '.DataTableController', DataTableController );
-      DataTableController.$inject = [ ngModuleName + '.dataSourceService' ];
-
+      DataTableController.$inject = [ 'com.pentaho.det.data.dataSourceService' ];
       function DataTableController( dataSourceService ) {
         var viewModel = this;
         viewModel.title = 'DataTableController';

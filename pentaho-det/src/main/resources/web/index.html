@@ -19,10 +19,10 @@
 <html>
 
   <head>
-    <script src="/requirejs-manager/js/require-init.js"></script>
+    <script type="text/javascript" src="/requirejs-manager/js/require-init.js"></script>
     <script type="text/javascript">
       require([ "com.pentaho.det/js/app" ], function( app ) {
-        app.init();
+        app.init( document );
       });
     </script>
 

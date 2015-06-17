@@ -1,19 +1,12 @@
 {
-  "deps": [ "angular" ],
-
   "paths": {
     "com.pentaho.det.pluginA": "DataExplorerToolPluginA/web"
   },
 
   "config": {
     "service": {
-      "com.pentaho.det.pluginA/app": "IDetPlugin"
+      "com.pentaho.det.pluginA/app.module": "IDetPlugin"
     }
   },
 
-  "shim": {
-  },
-
-  "map": {
-  }
 }
