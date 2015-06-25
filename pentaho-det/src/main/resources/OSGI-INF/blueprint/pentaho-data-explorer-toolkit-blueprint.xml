@@ -28,7 +28,13 @@
   </cm:property-placeholder>
   <!-- END: Configuration -->
 
+
+  <!-- BA -->
+
+
   <!-- Spoon Plugin -->
+<!-- UNCOMMENT FOR SPOON
+
   <bean id="dataSourceProviderAggregatorBean"
         class="com.pentaho.det.impl.domain.DataSourceProviderAggregator"
         scope="singleton">
@@ -53,15 +59,21 @@
            ref="previewDataSourceProviderBean">
   </service>
 
+-->
+
   <!-- Endpoints -->
   <cxf:bus id="DataExplorerToolImplBus">
   </cxf:bus>
 
   <jaxrs:server address="/DataExplorerTool" id="dataExplorerToolService">
     <jaxrs:serviceBeans>
-      <bean class="com.pentaho.det.impl.endpoints.Preview" >
-        <!--argument ref="previewListener"/-->
+      <!-- UNCOMMENT FOR SPOON
+      <bean class="com.pentaho.det.impl.endpoints.DataSourceService" >
         <property name="dataSourceProvider" ref="dataSourceProviderAggregatorBean"/>
+      </bean>
+      -->
+      <bean class="com.pentaho.det.impl.endpoints.FakeDataSourceService"
+            scope="singleton">
       </bean>
     </jaxrs:serviceBeans>
     <jaxrs:providers>

@@ -22,13 +22,12 @@ import com.pentaho.det.api.domain.IDataTable;
 import com.pentaho.det.api.services.IDataSourceProvider;
 import com.pentaho.det.impl.endpoints.dto.DataSourceDTO;
 import com.pentaho.det.impl.endpoints.dto.DataTableDTO;
+import com.pentaho.det.impl.services.IDataSourceService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -36,8 +35,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-@Path( "preview" )
-public class Preview {
+@Path( "det" )
+public class DataSourceService implements IDataSourceService {
 
   // region Properties
   public IDataSourceProvider getDataSourceProvider() {
@@ -51,7 +50,7 @@ public class Preview {
   // endregion
 
   // region Constructors
-  public Preview() {
+  public DataSourceService() {
 
   }
 
@@ -65,9 +64,6 @@ public class Preview {
     return "Hello from Data Explorer Tool";
   }
 
-  @GET
-  @Produces( MediaType.APPLICATION_JSON )
-  @Path( "/dataSources" )
   public Collection<DataSourceDTO> getDataSources() {
     Collection<DataSourceDTO> dataSourceDTOs = new ArrayList<>();
     for ( IDataSource dataSource : this.getDataSourceProvider().getDataSources().values() ) {
@@ -77,11 +73,8 @@ public class Preview {
     return dataSourceDTOs;
   }
 
-  @GET
-  @Produces( MediaType.APPLICATION_JSON )
-  @Path( "/dataSources/{dataSourceUuidOrName}" )
-  public DataSourceDTO getDataSource( @PathParam( "dataSourceUuidOrName" ) String dataSourceUuidOrName,
-                                      @Context final HttpServletResponse response ) {
+  public DataSourceDTO getDataSource( String dataSourceUuidOrName,
+                                      final HttpServletResponse response ) {
 
     IDataSource dataSource = findDataSourceByIdOrName( this.getDataSourceProvider().getDataSources(), dataSourceUuidOrName );
     if ( dataSource == null ) {
@@ -93,11 +86,8 @@ public class Preview {
     return dataSourceDTO;
   }
 
-  @GET
-  @Produces( MediaType.APPLICATION_JSON )
-  @Path( "/dataSources/{dataSourceUuidOrName}/data" )
-  public DataTableDTO getDataSourceData( @PathParam( "dataSourceUuidOrName" ) String dataSourceUuidOrName,
-                                         @Context final HttpServletResponse response ) {
+  public DataTableDTO getDataSourceData( String dataSourceUuidOrName,
+                                         final HttpServletResponse response ) {
 
     IDataSource dataSource = findDataSourceByIdOrName( this.getDataSourceProvider().getDataSources(),
         dataSourceUuidOrName );

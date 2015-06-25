@@ -47,6 +47,10 @@ public final class DataSourceDTO {
   // endregion
 
   // region Constructors
+  public DataSourceDTO() {
+
+  }
+
   public DataSourceDTO( IDataSource dataSource ) {
     this.setUUID( dataSource.getUUID() );
     this.setName( dataSource.getName() );

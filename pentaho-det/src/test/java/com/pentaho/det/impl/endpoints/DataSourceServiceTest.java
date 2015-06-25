@@ -19,8 +19,6 @@ package com.pentaho.det.impl.endpoints;
 
 import com.pentaho.det.api.domain.IDataSource;
 import com.pentaho.det.api.domain.IDataTable;
-import com.pentaho.det.api.domain.IDataTableEntry;
-import com.pentaho.det.api.domain.IField;
 import com.pentaho.det.api.services.IDataSourceProvider;
 import com.pentaho.det.impl.endpoints.dto.DataSourceDTO;
 import com.pentaho.det.impl.endpoints.dto.DataTableDTO;
@@ -32,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-public class PreviewTest {
+public class DataSourceServiceTest {
 
   // region Tests
   @Test
@@ -56,11 +53,11 @@ public class PreviewTest {
     IDataSource dataSourceMock = this.createDataSourceMock( expectedDataSourceUUID, expectedDataSourceName );
     IDataSourceProvider dataSourceProviderMock = this.createMockDataSourceProvider( dataSourceMock );
 
-    Preview previewService = this.createPreview();
-    previewService.setDataSourceProvider( dataSourceProviderMock );
+    DataSourceService dataSourceService = this.createDataSourceService();
+    dataSourceService.setDataSourceProvider( dataSourceProviderMock );
 
     // act
-    Collection<DataSourceDTO> actualDataSourceDTOs = previewService.getDataSources();
+    Collection<DataSourceDTO> actualDataSourceDTOs = dataSourceService.getDataSources();
 
     // test
     assertThat( actualDataSourceDTOs, hasSize( 1 ) );
@@ -78,11 +75,11 @@ public class PreviewTest {
 
     HttpServletResponse responseMock = mock( HttpServletResponse.class );
 
-    Preview previewService = this.createPreview();
-    previewService.setDataSourceProvider( dataSourceProviderMock );
+    DataSourceService dataSourceService = this.createDataSourceService();
+    dataSourceService.setDataSourceProvider( dataSourceProviderMock );
 
     // act
-    DataSourceDTO actualDataSourceDTO = previewService.getDataSource( expectedDataSourceUUID.toString(), responseMock );
+    DataSourceDTO actualDataSourceDTO = dataSourceService.getDataSource( expectedDataSourceUUID.toString(), responseMock );
     assertThat( actualDataSourceDTO.getUUID(), equalTo( expectedDataSourceUUID ) );
     assertThat( actualDataSourceDTO.getName(), equalTo( expectedDataSourceName ) );
 
@@ -97,11 +94,11 @@ public class PreviewTest {
 
     HttpServletResponse responseMock = mock( HttpServletResponse.class );
 
-    Preview previewService = this.createPreview();
-    previewService.setDataSourceProvider( dataSourceProviderMock );
+    DataSourceService dataSourceService = this.createDataSourceService();
+    dataSourceService.setDataSourceProvider( dataSourceProviderMock );
 
     // act
-    DataSourceDTO actualDataSourceDTO = previewService.getDataSource( expectedDataSourceName, responseMock );
+    DataSourceDTO actualDataSourceDTO = dataSourceService.getDataSource( expectedDataSourceName, responseMock );
     assertThat( actualDataSourceDTO.getUUID(), equalTo( expectedDataSourceUUID ) );
     assertThat( actualDataSourceDTO.getName(), equalTo( expectedDataSourceName ) );
   }
@@ -112,11 +109,11 @@ public class PreviewTest {
     IDataSourceProvider dataSourceProviderMock = this.createMockDataSourceProvider();
     HttpServletResponse responseMock = mock( HttpServletResponse.class );
 
-    Preview previewService = this.createPreview();
-    previewService.setDataSourceProvider( dataSourceProviderMock );
+    DataSourceService dataSourceService = this.createDataSourceService();
+    dataSourceService.setDataSourceProvider( dataSourceProviderMock );
 
     // act
-    DataSourceDTO actualDataSourceDTO = previewService.getDataSource( nonexistingDataSourceUUID.toString(), responseMock );
+    DataSourceDTO actualDataSourceDTO = dataSourceService.getDataSource( nonexistingDataSourceUUID.toString(), responseMock );
     assertThat( actualDataSourceDTO, nullValue() );
     verify( responseMock ).setStatus( Response.Status.NOT_FOUND.getStatusCode() );
   }
@@ -127,11 +124,11 @@ public class PreviewTest {
     IDataSourceProvider dataSourceProviderMock = this.createMockDataSourceProvider();
     HttpServletResponse responseMock = mock( HttpServletResponse.class );
 
-    Preview previewService = this.createPreview();
-    previewService.setDataSourceProvider( dataSourceProviderMock );
+    DataSourceService dataSourceService = this.createDataSourceService();
+    dataSourceService.setDataSourceProvider( dataSourceProviderMock );
 
     // act
-    DataSourceDTO actualDataSourceDTO = previewService.getDataSource( nonexistingDataSourceName, responseMock );
+    DataSourceDTO actualDataSourceDTO = dataSourceService.getDataSource( nonexistingDataSourceName, responseMock );
     assertThat( actualDataSourceDTO, nullValue() );
     verify( responseMock ).setStatus( Response.Status.NOT_FOUND.getStatusCode() );
   }
@@ -147,8 +144,8 @@ public class PreviewTest {
     when( dataSourceMock.getData() ).thenReturn( dataTableMock );
     IDataSourceProvider dataSourceProviderMock = this.createMockDataSourceProvider( dataSourceMock );
 
-    Preview previewService = this.createPreview();
-    previewService.setDataSourceProvider( dataSourceProviderMock );
+    DataSourceService dataSourceService = this.createDataSourceService();
+    dataSourceService.setDataSourceProvider( dataSourceProviderMock );
 
     fail( "Test not implemented" );
 
@@ -157,8 +154,8 @@ public class PreviewTest {
 
   // region auxiliary methods
 
-  private Preview createPreview() {
-    return new Preview();
+  private DataSourceService createDataSourceService() {
+    return new DataSourceService();
   }
 
   private IDataSource createDataSourceMock( UUID uuid, String name ) {
