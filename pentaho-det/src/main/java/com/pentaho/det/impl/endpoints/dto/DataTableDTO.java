@@ -21,8 +21,6 @@ import com.pentaho.det.api.domain.IDataTable;
 import com.pentaho.det.api.domain.IDataTableEntry;
 import com.pentaho.det.api.domain.IField;
 //import com.pentaho.det.impl.domain.DataTableOld;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.core.row.ValueMetaInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +30,16 @@ import javax.xml.bind.annotation.XmlElement;
 public final class DataTableDTO {
 
   @XmlElement( name = "cols" )
-  public List<ColumnDefinitionDTO> columnDefinitions;
+  public List<ColumnDefinitionDTO> cols;
 
   @XmlElement( name = "rows" )
   public List<RowDTO> rows;
 
   @XmlElement( name = "p" )
-  public Object custom;
+  public Object p;
 
   public DataTableDTO() {
-    this.columnDefinitions = new ArrayList<>();
+    this.cols = new ArrayList<>();
     this.rows = new ArrayList<>();
   }
 
@@ -55,7 +53,7 @@ public final class DataTableDTO {
       for ( int iColumn = 0; iColumn < rowMeta.size(); iColumn++ ) {
         String fieldName = fieldNames[iColumn];
         ValueMetaInterface cellValueMeta = rowMeta.getValueMeta( iColumn );
-        this.columnDefinitions.add( iColumn, new ColumnDefinitionDTO( cellValueMeta, fieldName ) );
+        this.cols.add( iColumn, new ColumnDefinitionDTO( cellValueMeta, fieldName ) );
       }
 
       List<Object[]> rows = dataTable.getRows();
@@ -73,7 +71,7 @@ public final class DataTableDTO {
     if( dataTable != null ) {
       for ( IField field : dataTable.getFields() ) {
         ColumnDefinitionDTO columnDefinitionDTO = new ColumnDefinitionDTO( field.getType(), field.getName() );
-        this.columnDefinitions.add( columnDefinitionDTO );
+        this.cols.add(columnDefinitionDTO);
       }
 
       for ( IDataTableEntry dataTableEntry : dataTable.getEntries() ) {

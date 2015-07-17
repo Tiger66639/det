@@ -68,7 +68,7 @@ public final class ColumnDefinitionDTO {
       case ValueMetaInterface.TYPE_DATE:
         return ColumnType.DATE;
       default:
-        throw new IllegalArgumentException( "Unknown value meta interface type: " + valueType );
+        throw new IllegalArgumentException( "Unknown v meta interface type: " + valueType );
     }
   }
 

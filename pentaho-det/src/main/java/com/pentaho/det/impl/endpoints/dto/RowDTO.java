@@ -26,31 +26,31 @@ public final class RowDTO {
   public static final class CellDTO<T> {
 
     @XmlElement( name = "v" )
-    public T value;
+    public T v;
 
     @XmlElement( name = "f" )
-    public String formatedValue;
+    public String f;
 
     @XmlElement( name = "p" )
-    public Object custom;
+    public Object p;
 
     public CellDTO() { }
 
     public CellDTO( T value ) {
-      this.value = value;
+      this.v = value;
     }
 
   }
 
   @XmlElement( name = "c", required = true )
-  public List<CellDTO> cells;
+  public List<CellDTO> c;
 
   @XmlElement( name = "p" )
-  public Object custom;
+  public Object p;
 
 
   public RowDTO() {
-    this.cells = new ArrayList<>();
+    this.c = new ArrayList<>();
   }
 
   public RowDTO( Object[] row ) {
@@ -58,10 +58,10 @@ public final class RowDTO {
 
     for ( int iCell = 0; iCell < row.length; iCell++ ) {
       RowDTO.CellDTO cellDto = new RowDTO.CellDTO<>( row[ iCell ] );
-      if ( cellDto.value == null ) {
+      if ( cellDto.v == null ) {
         cellDto = null;
       }
-      this.cells.add( iCell, cellDto );
+      this.c.add(iCell, cellDto);
     }
   }
 

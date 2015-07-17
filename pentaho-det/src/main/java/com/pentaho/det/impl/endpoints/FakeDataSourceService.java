@@ -59,7 +59,7 @@ public class FakeDataSourceService implements IDataSourceService {
     DataTableDTO dataTable = new DataTableDTO( );
     for ( int iColumnDefinition = 0; iColumnDefinition < numberOfColumns; iColumnDefinition++ ) {
       ColumnDefinitionDTO columnDefinition = new ColumnDefinitionDTO( ColumnDefinitionDTO.ColumnType.STRING, "column" + iColumnDefinition );
-      dataTable.columnDefinitions.add( columnDefinition );
+      dataTable.cols.add( columnDefinition );
     }
 
     for ( int iRow = 0; iRow < numberOfRows; iRow++ ) {

@@ -220,7 +220,7 @@ public class DataSourceProviderAggregatorTest {
   }
 
   /**
-   * Joins two maps. Duplicate keys receive the value from {@code mapB}
+   * Joins two maps. Duplicate keys receive the v from {@code mapB}
    */
   private <K,V> Map<K, V> joinMaps( Map<K, V> mapA, Map<K, V> mapB ) {
     Map<K, V> joinedMap = new HashMap<>();

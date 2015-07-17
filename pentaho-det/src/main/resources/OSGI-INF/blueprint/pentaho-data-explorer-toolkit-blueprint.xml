@@ -22,7 +22,7 @@
                            update-strategy="reload">
     <cm:default-properties>
       <!--
-      <cm:property name="sampleName" value="sampleValue"/>
+      <cm:property name="sampleName" v="sampleValue"/>
       -->
     </cm:default-properties>
   </cm:property-placeholder>
@@ -77,13 +77,19 @@
       </bean>
     </jaxrs:serviceBeans>
     <jaxrs:providers>
-      <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
+      <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider">
+          <argument>
+              <list>
+             <value type="org.codehaus.jackson.jaxrs.Annotations">JAXB</value>
+             </list>
+          </argument>
+      </bean>
       <!--
       <bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
-        <property name="dropRootElement" value="true"/>
-        <property name="dropCollectionWrapperElement" value="true"/>
-        <property name="serializeAsArray" value="true"/>
-        <property name="supportUnwrapped" value="true"/>
+        <property name="dropRootElement" v="true"/>
+        <property name="dropCollectionWrapperElement" v="true"/>
+        <property name="serializeAsArray" v="true"/>
+        <property name="supportUnwrapped" v="true"/>
       </bean>
       -->
     </jaxrs:providers>
