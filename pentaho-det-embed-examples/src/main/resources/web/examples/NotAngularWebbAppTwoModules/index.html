@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">
+      //Replace @PENTAHO_SERVER_HOST@ with the location of your pentaho server
+      var pentaho_host = "@PENTAHO_SERVER_HOST@";
+      var CONTEXT_PATH = pentaho_host;
+
+      document.write("<script language='javascript' type='text/javascript' src='" + CONTEXT_PATH + "osgi/requirejs-manager/js/require-init.js'></scr"+"ipt>");
+      document.write("<script language='javascript' type='text/javascript' src='" + CONTEXT_PATH + "content/common-ui/resources/web/common-ui-require-js-cfg.js'></scr"+"ipt>");
+    </script>
+    
+    <script type="text/javascript">
+      requireCfg.baseUrl = CONTEXT_PATH = pentaho_host + "osgi/";
+      requireCfg.config.text = {
+        onXhr: function(xhr, url) {
+          //Called after the XHR has been created and after the
+          //xhr.open() call, but before the xhr.send() call.
+          //Useful time to set headers.
+          //xhr: the xhr object
+          //url: the url that is being used with the xhr object.
+          xhr.withCredentials = true;
+        }
+      };
+
+      require.config( requireCfg );
+
+      require([ 
+        "angular",
+
+        "com.pentaho.det.pluginA/app.module",
+        "com.pentaho.det.pluginB/app.module",
+
+        "underscorejs",
+
+        'angular-ui-router',
+        'ct-ui-router-extras',
+        'ui-router-state-helper'
+        ], 
+
+        function( angular, pluginA, pluginB, _ ) {
+          var myModuleName = 'webApp';
+          var moduleDeps = [ 'ui.router', 'ct.ui.router.extras', 'ui.router.stateHelper', pluginA.name, pluginB.name ];
+          angular
+            .module(myModuleName, moduleDeps )
+            .config(config)
+            .run(run);
+
+          var stateA = getModuleFirstState(pluginA);
+          var stateB = getModuleFirstState(pluginB);
+
+          config.$inject = [ 'stateHelperProvider', '$urlRouterProvider' , '$stateProvider', '$httpProvider' ];
+          function config( stateHelperProvider, $urlRouterProvider, $stateProvider, $httpProvider ) {
+            $urlRouterProvider.otherwise( '/' );
+
+            //$http request default configuration for CORS
+            $httpProvider.defaults.withCredentials = true;
+
+            //create a named view for each state, so that they can be loaded in parallel in the same parent state
+            var viewsMapping = {};
+            viewsMapping[stateA.name] = "pluginA";
+            viewsMapping[stateB.name] = "pluginB";
+
+            //This will create/rename the necessary views on all states of your application
+            var rootChildren = configStates([stateA, stateB], viewsMapping);
+
+            //The template must have a view for each module, with the currect view name
+            var rootTemplate = '' +
+                    '<div data-ui-view="' + viewsMapping[stateA.name] + '" class="well"></div>' +
+                    '<br>' +
+                    '<div data-ui-view="' + viewsMapping[stateB.name] + '" class="well"></div>';
+
+            //Basic root state for embending angular app
+            var rootState = {
+              name: myModuleName,
+              template: rootTemplate,
+              children: rootChildren
+            };
+
+            stateHelperProvider.state( rootState );
+          } //end of config
+
+          //Tell your application what to do when it starts running
+          run.$inject = ['$state'];
+          function run($state) {
+            initStates($state, [stateA, stateB]);
+          }
+
+
+          angular.element( document ).ready( function () {
+            angular.bootstrap( document, [ myModuleName ]);
+          });
+
+
+          /**
+           * Function that will return the first state of the given DET module
+           *
+           * @param module DET module
+           * @return {Object} First state of DET module
+           */
+          function getModuleFirstState(module) {
+            return module.states[0];
+          }
+
+          /**
+           * Function that will load all the states passed as argument, in your web application page
+           *
+           * @param $state angular service
+           * @param states array of states
+           */
+          function initStates($state, states) {
+
+            if(_.size(states)) {
+              var firstState = _.first(states);
+              var stateName = firstState.name;
+
+              $state.go(stateName).then( function() {
+                initStates($state, states.slice(1))
+              });
+            }
+
+          }
+
+          /**
+           * Function that will configure all states and their children states,
+           * using the viewsMapping object to create/rename views so that
+           * the DET modules load to the desired places of the application
+           *
+           * @param states array of states
+           * @param viewsMapping Object that contains the mapping between the original view name and the new name
+           *                     you want to give it
+           * @return {Array} Initial array of states correctly configured
+           */
+          function configStates(states, viewsMapping ) {
+            _.map(states, function(state, index) {
+              var nViews = _.size(state.views);
+
+              if(nViews == 0) {
+                state = _mapInitialStateViews(state, viewsMapping);
+              } else {
+                state = _mapOtherStateViews(state, viewsMapping);
+              }
+
+              _.map(state.children, function(childState, index) {
+                _mapOtherStateViews(childState, viewsMapping);
+              });
+            });
+
+            return states;
+          }
+
+          /**
+           * Auxiliary Function used by "configStates" to configure the states
+           * that are direct children of the root state.
+           *
+           * @param state current state being configured
+           * @param viewsMapping Object that contains the mapping between the original view name and the new name
+           *                     you want to give it
+           */
+          function _mapInitialStateViews(state, viewsMapping) {
+            state.sticky = state.sdr = true;
+            state.views = {};
+            var viewName = viewsMapping[state.name];
+            state.views[viewName] = {
+              template: state.template,
+              controller: state.controller,
+              controllerAs: state.controllerAs
+            };
+
+            return state;
+          }
+
+          /**
+           * Auxiliary Function used by "configStates" to configure
+           * all the states of the application
+           *
+           * @param state current state being configured
+           * @param viewsMapping Object that contains the mapping between the original view name and the new name
+           *                     you want to give it
+           */
+          function _mapOtherStateViews(state, viewsMapping) {
+            if(state.views === undefined) {
+              return;
+            }
+
+            var stateViews = state.views;
+            _.map(viewsMapping, function(originalViewName, newViewName) {
+              var stateOriginalView = stateViews[originalViewName];
+
+              stateViews[newViewName] = stateOriginalView;
+              delete stateOriginalView;
+            });
+          }
+        });
+    </script>
+
+    <title>Data Explorer Tool</title>
+    <!-- Bootstrap CSS -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body class="container">
+    <h1>Pentaho Angular</h1>
+    <h2>Embedded DET App</h2>
+
+    <div data-ui-view>
+
+    </div>
+
+  </body>
+
+</html>
