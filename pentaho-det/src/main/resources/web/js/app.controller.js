@@ -17,7 +17,6 @@
 
 define(
     [
-      'angular-ui-router' // $state
     ],
     function ( ) {
       "use strict";

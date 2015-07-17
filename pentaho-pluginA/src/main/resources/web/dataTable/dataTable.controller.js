@@ -21,8 +21,8 @@ define(
     function( ) {
       "use strict";
 
-      DataTableController.$inject = [ 'com.pentaho.det.data.dataSourceService' ];
-      function DataTableController( dataSourceService ) {
+      DataTableController.$inject = [ 'moduleChildren', 'com.pentaho.det.dataA.dataSourceService' ];
+      function DataTableController( moduleChildren, dataSourceService ) {
         var viewModel = this;
         viewModel.title = 'DataTableController';
         viewModel.activate = activate;
@@ -37,6 +37,7 @@ define(
 
         function activate() {
           viewModel.previewData = dataSourceService.getDataFromDataSource( "stepA" );
+          viewModel.moduleChildren = moduleChildren;
         }
 
         function getRowValue ( columnIdx ) {

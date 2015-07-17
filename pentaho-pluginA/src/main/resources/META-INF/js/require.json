@@ -7,6 +7,5 @@
     "service": {
       "com.pentaho.det.pluginA/app.module": "IDetPlugin"
     }
-  },
-
+  }
 }

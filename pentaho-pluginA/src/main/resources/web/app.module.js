@@ -19,7 +19,10 @@
 define(
     [
       'angular',
-// TODO: add resource
+
+      // TODO: add resource
+      'text!./dataTable/dataTable.html',
+
       './dataTable/dataTable.controller',
       './services/dataSourceService',
 
@@ -28,40 +31,36 @@ define(
       'smart-table'
 
     ],
-    function ( angular, DataTableController, dataSourceService
+    function ( angular, appModuleHtml, DataTableController, dataSourceService
 
     ) {
       "use strict";
 
-      var ngModuleName = 'com.pentaho.det.data';
+      var ngModuleName = 'com.pentaho.det.dataA';
 
       var dataModule = angular
           .module( ngModuleName, [ 'ui.router', 'smart-table', 'ngResource' ] )
           .factory( ngModuleName + '.dataSourceService', dataSourceService );
 
-
-      // Controller registered in the state
-      // app.module.controller( ngModuleName + '.DataTableController', DataTableController );
-
-
-      /*
-      plugin.config( [ '$stateProvider', '$urlRouterProvider',
-        function( $stateProvider ) {
-
-        $stateProvider
-            .state( 'Data', {
-              url: "/pluginA",
-              templateUrl: "/DataExplorerToolPluginA/web/partials/plugin.html"
-            });
-      }]);
-      */
+      var moduleStateChildren = [{
+        name: "DataA_Child",
+          template: '<div class="well"><h1>I\'m a child state from DataA</h1><a data-ui-sref=".DataA_Child_N2">DataA_Child_N2</a><br><div data-ui-view></div></div>',
+          children: [{
+            name: 'DataA_Child_N2',
+            template: '<div class="well"><h1>I\'m a child state from DataA_Child</h1></div>'
+          }]
+      }];
 
       var moduleStates = [
         {
-          name: 'Data',
-          templateUrl: '/DataExplorerToolPluginA/web/dataTable/dataTable.html', // TODO: relative, embedable path
+          name: 'DataA',
+          template: appModuleHtml,
           controller: DataTableController,
-          controllerAs: 'viewModel'
+          controllerAs: 'viewModel',
+          resolve: {
+            moduleChildren: function() { return moduleStateChildren; }
+          },
+          children: moduleStateChildren
         }
       ];
 

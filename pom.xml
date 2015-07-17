@@ -128,7 +128,10 @@
     <module>pentaho-pluginA</module>
     <module>pentaho-pluginB</module>
     <module>smart-table</module>
+    <module>require-amd</module>
     <module>ui-router-state-helper</module>
+    <module>ui-router-extras</module>
+    <module>pentaho-det-embed-examples</module>
   </modules>
 
 </project>

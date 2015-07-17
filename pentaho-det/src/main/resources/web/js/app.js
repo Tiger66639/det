@@ -47,9 +47,9 @@ define(
 
       'service!IDetPlugin',
 
-      'angular-ui-router',
-      'ui-router-state-helper',
       'angular-resource',
+      'angular-ui-router',
+      'ui-router-state-helper'
     ],
     function ( angular,
                _,
@@ -69,9 +69,11 @@ define(
           .flatten( true )
           .value();
 
+      /*
+      * Module creation and configuration
+      */
       var detApp = angular
           .module( moduleName, moduleDependencies )
-          //.controller( moduleName + 'ApplicationController', applicationController )
           .config( config )
           // TODO: remove debug logs
           .run( debugStates );
@@ -102,39 +104,17 @@ define(
         });
       }
 
-      config.$inject = [ 'stateHelperProvider', '$urlRouterProvider' , '$stateProvider' ];
-      function config( stateHelperProvider, $urlRouterProvider, $stateProvider ) {
+      config.$inject = [ 'stateHelperProvider', '$urlRouterProvider' , '$stateProvider', '$httpProvider' ];
+      function config( stateHelperProvider, $urlRouterProvider, $stateProvider, $httpProvider ) {
         var rootURL = '/det';
         // For any unmatched url, send to root url
         $urlRouterProvider.otherwise( rootURL );
 
-        /*
-        $stateProvider
-            .state( 'mainView', {
-              url: "/mainView",
-              templateUrl: "partials/pluginView.html",
-              controller: function( $scope, previewDataProvider ) {
-                $scope.previewData = previewDataProvider.getDataFromDataSource( "stepA" );
-                $scope.getRowValue = function ( columnIdx ) {
-                  return function ( row ) {
-                    if ( row.c && row.c[columnIdx] ) {
-                      return row.c[columnIdx].v;
-                    }
-
-                    return undefined;
-                  }
-                };
-
-                $scope.displayRowCollection = [];
-              }
-            });
-        */
+        $httpProvider.defaults.withCredentials = true;
 
         var rootState = {
-          //abstract: true,
-          name: 'detApp',
+          name: moduleName,
           url: rootURL,
-          //templateUrl: 'js/app.html',
           template: appHtml,
           controller: applicationController,
           controllerAs: 'appViewModel',
@@ -144,9 +124,7 @@ define(
           children: moduleRootStates
         };
 
-        stateHelperProvider
-        //$stateProvider
-            .state( rootState );
+        stateHelperProvider.state( rootState );
       }
 
       return {

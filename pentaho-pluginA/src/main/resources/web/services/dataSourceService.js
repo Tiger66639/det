@@ -24,7 +24,8 @@ define(
       dataSourceService.$inject = [ '$resource' ];
       function dataSourceService( $resource ) {
         // TODO: resolve base url ?
-        var baseUrl = '/cxf/DataExplorerTool/preview';
+        //var baseUrl = '/cxf/DataExplorerTool/preview';
+        var baseUrl = (CONTEXT_PATH === '/' ? '/pentaho/osgi/' : CONTEXT_PATH) + 'cxf/DataExplorerTool/det';
         var DataSource = $resource( baseUrl + '/dataSources/:uuid',
             { uuid: '@uuid', name:'@name' },
             { getData: { method: 'GET', url: baseUrl + '/dataSources/:uuid/data' } }
