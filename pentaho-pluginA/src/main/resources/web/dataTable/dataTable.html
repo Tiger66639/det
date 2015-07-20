@@ -18,6 +18,18 @@
 <div class="com.pentaho.det.dataA">
   <h1>Main View - Plugin A</h1>
 
+  <div>
+    <label for="calcFunction">CalcFunction</label>
+    <input id="calcFunction" type="text" data-ng-model="viewModel.calcFunctionModel" value="AVG"/>
+  </div>
+
+  <data-visualization
+      data-datatable="viewModel.previewData"
+      data-visualization-type="sample_calc"
+      data-visualization-role-calc="viewModel.calcFunctionModel"
+      data-visualization-scope-role-calc="viewModel.calcFunctionModel">
+  </data-visualization>
+
   <!-- TODO: change to table directive -->
   <div style="max-height: 200px; overflow: auto;">
     <table class="table table-striped"

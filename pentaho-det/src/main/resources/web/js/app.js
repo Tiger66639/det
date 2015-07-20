@@ -44,17 +44,19 @@ define(
 
       './app.controller',
       'text!./app.html',
+      '../visual/visualization/visualization.directive',
 
       'service!IDetPlugin',
 
-      'angular-resource',
       'angular-ui-router',
-      'ui-router-state-helper'
+      'ui-router-state-helper',
+      'angular-resource',
     ],
     function ( angular,
                _,
                applicationController,
                appHtml,
+               visualizationDirective,
                detPlugins ) {
       "use strict";
 
@@ -74,10 +76,13 @@ define(
       */
       var detApp = angular
           .module( moduleName, moduleDependencies )
+          //.controller( moduleName + 'ApplicationController', applicationController )
+          .directive( 'visualization', visualizationDirective )
           .config( config )
           // TODO: remove debug logs
           .run( debugStates );
 
+      debugStates.$inject = [ '$rootScope' ];
       function debugStates( $rootScope ) {
         //var $rootScope = angular.element(document.querySelectorAll("[ui-view]")[0]).injector().get('$rootScope');
 
