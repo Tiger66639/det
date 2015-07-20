@@ -25,7 +25,11 @@ define(
       function dataSourceService( $resource ) {
         // TODO: resolve base url ?
         //var baseUrl = '/cxf/DataExplorerTool/preview';
-        var baseUrl = (CONTEXT_PATH === '/' ? '/pentaho/osgi/' : CONTEXT_PATH) + 'cxf/DataExplorerTool/det';
+        //var baseUrl = (CONTEXT_PATH === '/' ? '/pentaho/osgi/' : CONTEXT_PATH) + 'cxf/DataExplorerTool/det';
+
+        // baseURL BA server
+        var baseUrl = CONTEXT_PATH + 'osgi/cxf/DataExplorerTool/det';
+
         var DataSource = $resource( baseUrl + '/dataSources/:uuid',
             { uuid: '@uuid', name:'@name' },
             { getData: { method: 'GET', url: baseUrl + '/dataSources/:uuid/data' } }

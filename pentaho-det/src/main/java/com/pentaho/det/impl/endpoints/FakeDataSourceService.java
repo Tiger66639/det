@@ -26,7 +26,9 @@ import com.pentaho.det.impl.services.IDataSourceService;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Path( "det" )
@@ -37,7 +39,13 @@ public class FakeDataSourceService implements IDataSourceService {
 
   public FakeDataSourceService() {
     this.dataSource = new DataSourceDTO().setUUID( UUID.randomUUID() ).setName( "fakeDataSource" );
-    this.dataTableDTO = this.createDataTableDTO( 4, 100 );
+
+    ColumnDefinitionDTO.ColumnType[] columnTypes = new ColumnDefinitionDTO.ColumnType[] {
+        ColumnDefinitionDTO.ColumnType.STRING,
+        ColumnDefinitionDTO.ColumnType.NUMBER
+    };
+    this.dataTableDTO = this.createDataTableDTO( Arrays.asList( columnTypes ), 100 );
+    //this.dataTableDTO = this.createDataTableDTO( 2, 100 );
   }
 
   @Override public Collection<DataSourceDTO> getDataSources() {
@@ -74,4 +82,42 @@ public class FakeDataSourceService implements IDataSourceService {
     return dataTable;
 
   }
+
+  private DataTableDTO createDataTableDTO( Iterable<ColumnDefinitionDTO.ColumnType> columnTypes, int numberOfRows ) {
+    DataTableDTO dataTable = new DataTableDTO( );
+    int columLabelIdx = 0;
+    for ( ColumnDefinitionDTO.ColumnType columnType : columnTypes ) {
+      ColumnDefinitionDTO columnDefinition = new ColumnDefinitionDTO( columnType, "column" + columLabelIdx++ );
+      dataTable.cols.add( columnDefinition );
+    }
+
+    for ( int iRow = 0; iRow < numberOfRows; iRow++ ) {
+      RowDTO row = this.createRow( columnTypes );
+      dataTable.rows.add( row );
+    }
+
+    return dataTable;
+  }
+
+  private RowDTO createRow( Iterable<ColumnDefinitionDTO.ColumnType> columnTypes ) {
+    List<Object> rowData = new ArrayList<>(  );
+    for ( ColumnDefinitionDTO.ColumnType columnType : columnTypes ) {
+      Object value = this.createRandomValue( columnType );
+      rowData.add( value );
+    }
+    RowDTO row = new RowDTO( rowData.toArray() );
+    return row;
+  }
+
+  private Object createRandomValue( ColumnDefinitionDTO.ColumnType valueType ) {
+    switch ( valueType ) {
+      case STRING:
+        return UUID.randomUUID().toString();
+      case NUMBER:
+        return Math.random() * 100;
+      default:
+        return UUID.randomUUID().toString();
+    }
+  }
+
 }

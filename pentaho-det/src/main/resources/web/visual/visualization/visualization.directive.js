@@ -97,8 +97,6 @@ define(
             }
           }
 
-          ctrl.render = render;
-
           function getValue( attrName ) {
             return scope.$parent.$eval( attributes[PREFIX+ attrName] );
 

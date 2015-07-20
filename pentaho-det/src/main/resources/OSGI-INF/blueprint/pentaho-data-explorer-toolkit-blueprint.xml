@@ -78,18 +78,18 @@
     </jaxrs:serviceBeans>
     <jaxrs:providers>
       <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider">
-          <argument>
-              <list>
-             <value type="org.codehaus.jackson.jaxrs.Annotations">JAXB</value>
-             </list>
-          </argument>
+        <argument>
+          <list>
+            <value type="org.codehaus.jackson.jaxrs.Annotations">JAXB</value>
+          </list>
+        </argument>
       </bean>
       <!--
       <bean class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
-        <property name="dropRootElement" v="true"/>
-        <property name="dropCollectionWrapperElement" v="true"/>
-        <property name="serializeAsArray" v="true"/>
-        <property name="supportUnwrapped" v="true"/>
+        <property name="dropRootElement" value="true"/>
+        <property name="dropCollectionWrapperElement" value="true"/>
+        <property name="serializeAsArray" value="true"/>
+        <property name="supportUnwrapped" value="true"/>
       </bean>
       -->
     </jaxrs:providers>
