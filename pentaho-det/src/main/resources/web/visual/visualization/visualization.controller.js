@@ -42,18 +42,13 @@ define(
       function VisualizationController( ) {
         var viewModel = this;
         viewModel.title = 'VisualizationController';
-        viewModel.activate = activate;
+        viewModel.requirements = {};
 
         activate();
 
         ////////////////
 
         function activate() {
-          var placeholder = 42;
-        }
-
-        function addProperty( name, value ) {
-          viewModel[name] = value;
         }
 
       }

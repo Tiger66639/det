@@ -19,11 +19,13 @@ define(
     [
         './visualization.controller',
         'text!./visualization.html',
-        'pentaho/visual/Wrapper'
-    ],
-    function( controller, template, VisualWrapper ) {
-      "use strict";
+        'pentaho/visual/Wrapper',
 
+        'underscorejs'
+    ],
+    function( controller, template, VisualWrapper, _ ) {
+      "use strict";
+      
       VisualizationDirective.$inject = [];
       function VisualizationDirective () {
 
@@ -43,8 +45,7 @@ define(
             //'@' evaluates as a string
             //'=' evaluates in the isolate scope
             datatable: '=',
-            visualizationType: '@',
-            visualizationScopeRoleCalc: '='
+            visualizationType: '@'
           }
         };
 
@@ -53,55 +54,64 @@ define(
         //////////////////////////////////////
 
         function link( scope, element, attributes ) {
+          var REQUIREMENT_ATTRIBUTE_PREFIX = 'requirement';
+          var visualizationWrapper = new VisualWrapper( element[0] );
 
-          var domElement = element[0];
-          var visualizationWrapper = new VisualWrapper( domElement );
+          var requirementAttributes = getRequirementAttributes( attributes );
+          // Update the new requirement value on the scope viewModel and render the visualization every time a requirement attribute changes its value
+          _.each( requirementAttributes,
+              function ( requirementAttributeValue, requirementAttributeKey ) {
+                var requirementId = getRequirementId( requirementAttributeKey );
+                scope.$watch(
+                    function() { return scope.$parent.$eval( requirementAttributeValue ); },
+                    function( requirementNewValue ) {
+                      scope.viewModel.requirements[ requirementId ] = requirementNewValue;
+                      render();
+                    }
+                );
+              }
+          );
 
-          // TODO check whether to use scope or attributes
-          //scope.$watch( 'datatable' , render );
-          //scope.$watch( 'visualizationType', render );
-
-          //scope.$watch( attributes.visualizationRoleCalc, render );
-
-          scope.$watch( function() {
-            var vizCalc = scope.$parent.$eval( attributes.visualizationRoleCalc );
-            return vizCalc;
-          }, render );
-
-          function onPropertyChange ( propertyName, newValue ) {
-            scope[ propertyName]  = asd;
-          }
-
-          //attributes.$observe( 'visualizationRoleCalc', render );
-
-          //scope.$watch( 'visualizationScopeRoleCalc', render );
-
-
-          //render();
-
-          //scope.datatable.$promise.then( render );
+          scope.$on( '$destroy', dispose );
+          scope.datatable.$promise.then( render );
 
           ////////////////
 
+          function dispose() {
+            visualizationWrapper.dispose();
+          }
+
           function render() {
             if ( scope.datatable.$resolved ) {
-              // TODO check whether to use scope or attributes
               visualizationWrapper.data = scope.datatable;
-
               visualizationWrapper.visualSpec = {
-                type: scope.visualizationType,
-                calc: scope.$parent.$eval( attributes.visualizationRoleCalc )
-                //calc: scope.visualizationScopeRoleCalc
+                type: scope.visualizationType
               };
+              _.extend( visualizationWrapper.visualSpec, scope.viewModel.requirements );
+
               return visualizationWrapper.update(); // returns promise (ES6) resolves when rendered with no value (undefined)
             }
           }
 
-          function getValue( attrName ) {
-            return scope.$parent.$eval( attributes[PREFIX+ attrName] );
-
+          // returns associative map of requirement attributes
+          function getRequirementAttributes( attributes ) {
+            var requirementAttributes = _.pick( attributes, function( value, key ) {
+              return isRequirementAttribute( key );
+            } );
+            return requirementAttributes;
           }
 
+          function isRequirementAttribute( attributeName ) {
+            return attributeName.indexOf( REQUIREMENT_ATTRIBUTE_PREFIX ) == 0;
+          }
+
+          function getRequirementId( requirementAttributeName ) {
+            var regExp = new RegExp( '^(' + REQUIREMENT_ATTRIBUTE_PREFIX + ')' );
+            return requirementAttributeName
+                .replace( regExp ,"")
+                // TODO: match requirement Id with info from visual type instead of lowercasing
+                .toLowerCase();
+          }
         }
       }
 
