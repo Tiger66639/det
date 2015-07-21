@@ -17,17 +17,17 @@
 
 define(
     [
-        './visualization.controller',
-        'text!./visualization.html',
+        './visual.controller',
+        'text!./visual.html',
         'pentaho/visual/Wrapper',
 
         'underscorejs'
     ],
     function( controller, template, VisualWrapper, _ ) {
       "use strict";
-      
-      VisualizationDirective.$inject = [];
-      function VisualizationDirective () {
+
+      VisualDirective.$inject = [];
+      function VisualDirective () {
 
         var directive = {
           restrict: 'E',
@@ -45,7 +45,7 @@ define(
             //'@' evaluates as a string
             //'=' evaluates in the isolate scope
             datatable: '=',
-            visualizationType: '@'
+            visualType: '@'
           }
         };
 
@@ -55,20 +55,25 @@ define(
 
         function link( scope, element, attributes ) {
           var REQUIREMENT_ATTRIBUTE_PREFIX = 'requirement';
-          var visualizationWrapper = new VisualWrapper( element[0] );
+          var visualWrapper = new VisualWrapper( element[0] );
+          visualWrapper.visualSpec = {
+            type: scope.visualType
+          };
 
           var requirementAttributes = getRequirementAttributes( attributes );
-          // Update the new requirement value on the scope viewModel and render the visualization every time a requirement attribute changes its value
+          // Update the new requirement value on the scope viewModel and render the visual every time a requirement attribute changes its value
           _.each( requirementAttributes,
               function ( requirementAttributeValue, requirementAttributeKey ) {
                 var requirementId = getRequirementId( requirementAttributeKey );
-                scope.$watch(
-                    function() { return scope.$parent.$eval( requirementAttributeValue ); },
-                    function( requirementNewValue ) {
-                      scope.viewModel.requirements[ requirementId ] = requirementNewValue;
-                      render();
-                    }
-                );
+                if ( requirementId !== undefined ) {
+                  scope.$watch(
+                      function() { return scope.$parent.$eval( requirementAttributeValue ); },
+                      function( requirementNewValue ) {
+                        scope.viewModel.requirements[ requirementId ] = requirementNewValue;
+                        render();
+                      }
+                  );
+                }
               }
           );
 
@@ -78,18 +83,18 @@ define(
           ////////////////
 
           function dispose() {
-            visualizationWrapper.dispose();
+            visualWrapper.dispose();
           }
 
           function render() {
             if ( scope.datatable.$resolved ) {
-              visualizationWrapper.data = scope.datatable;
-              visualizationWrapper.visualSpec = {
-                type: scope.visualizationType
+              visualWrapper.data = scope.datatable;
+              visualWrapper.visualSpec = {
+                type: scope.visualType
               };
-              _.extend( visualizationWrapper.visualSpec, scope.viewModel.requirements );
+              _.extend( visualWrapper.visualSpec, scope.viewModel.requirements );
 
-              return visualizationWrapper.update(); // returns promise (ES6) resolves when rendered with no value (undefined)
+              return visualWrapper.update(); // returns promise (ES6) resolves when rendered with no value (undefined)
             }
           }
 
@@ -105,17 +110,31 @@ define(
             return attributeName.indexOf( REQUIREMENT_ATTRIBUTE_PREFIX ) == 0;
           }
 
+
           function getRequirementId( requirementAttributeName ) {
             var regExp = new RegExp( '^(' + REQUIREMENT_ATTRIBUTE_PREFIX + ')' );
-            return requirementAttributeName
-                .replace( regExp ,"")
-                // TODO: match requirement Id with info from visual type instead of lowercasing
-                .toLowerCase();
+            var candidateRequirementName = requirementAttributeName.replace( regExp ,"");
+
+            var requirementIds = _.chain ( visualWrapper.visualType.dataReqs )
+                .pluck( 'reqs' )  // select requirements from requirement set
+                .flatten()        // merge all requirements from different requirement sets
+                .pluck( 'id' )    // get requirement ids
+                .unique()         // eliminate duplicates
+                .value();
+
+            // find the matching Id in all the requirements defined for the visual type
+            // Note: this method does not differentiate between distinct requirements which name only differs in casing. E.g. "amazingRequirement" and "AmaZingReQuiRement"
+            return _.find( requirementIds, _.partial( areCaseInsensitiveEqual, candidateRequirementName ) );
           }
+
+          function areCaseInsensitiveEqual( stringA, stringB ) {
+            return stringA.toUpperCase() === stringB.toUpperCase();
+          }
+
         }
       }
 
-      return VisualizationDirective;
+      return VisualDirective;
     }
 
 );

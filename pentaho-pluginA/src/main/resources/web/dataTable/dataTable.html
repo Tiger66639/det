@@ -23,11 +23,11 @@
     <input id="calcFunction" type="text" data-ng-model="viewModel.calcFunctionModel" value="AVG"/>
   </div>
 
-  <data-visualization
+  <data-pentaho-visual
       data-datatable="viewModel.previewData"
-      data-visualization-type="sample_calc"
+      data-visual-type="sample_calc"
       data-requirement-calc="viewModel.calcFunctionModel">
-  </data-visualization>
+  </data-pentaho-visual>
 
   <!-- TODO: change to table directive -->
   <div style="max-height: 200px; overflow: auto;">

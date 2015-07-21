@@ -38,10 +38,10 @@ define(
     function( ) {
       "use strict";
 
-      VisualizationController.$inject = [ ];
-      function VisualizationController( ) {
+      VisualController.$inject = [ ];
+      function VisualController( ) {
         var viewModel = this;
-        viewModel.title = 'VisualizationController';
+        viewModel.title = 'VisualController';
         viewModel.requirements = {};
 
         activate();
@@ -53,7 +53,7 @@ define(
 
       }
 
-      return VisualizationController;
+      return VisualController;
     }
 
 );

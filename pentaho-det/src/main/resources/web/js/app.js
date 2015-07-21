@@ -44,7 +44,7 @@ define(
 
       './app.controller',
       'text!./app.html',
-      '../visual/visualization/visualization.directive',
+      '../visual/visual/visual.directive',
 
       'service!IDetPlugin',
 
@@ -56,7 +56,7 @@ define(
                _,
                applicationController,
                appHtml,
-               visualizationDirective,
+               visualDirective,
                detPlugins ) {
       "use strict";
 
@@ -77,7 +77,7 @@ define(
       var detApp = angular
           .module( moduleName, moduleDependencies )
           //.controller( moduleName + 'ApplicationController', applicationController )
-          .directive( 'visualization', visualizationDirective )
+          .directive( 'pentahoVisual', visualDirective )
           .config( config )
           // TODO: remove debug logs
           .run( debugStates );
