@@ -15,15 +15,27 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.api.domain;
+package org.pentaho.det.di;
 
-import java.util.List;
+public abstract class EventHandler<T> implements  IEventHandler<T> {
 
-public interface IDataTable {
+  public EventHandler( Class<T> typeParameter ) {
+    if ( typeParameter == null ) {
+      throw new IllegalArgumentException();
+    }
 
-  // TODO should be unique by name => use Map / Set ? Sets and Maps are not ordered.
-  List<IField> getFields();
+    this.typeParameter = typeParameter;
+  }
 
-  List<IDataTableEntry> getEntries();
+  // region Methods
+  @Override
+  public abstract void handle( T arg );
+
+  @Override
+  public Class<T> getTypeParameter() {
+    return this.typeParameter;
+  }
+  private Class<T> typeParameter;
+  // endregion
 
 }

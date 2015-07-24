@@ -3,17 +3,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.pentaho</groupId>
-    <artifactId>pentaho-ee-jar-parent-pom</artifactId>
-    <version>1.0.12</version>
+    <groupId>org.pentaho</groupId>
+    <artifactId>pentaho-ce-jar-parent-pom</artifactId>
+    <version>1.0.13</version>
   </parent>
 
-  <artifactId>pentaho-det-poc</artifactId>
+  <artifactId>pentaho-det</artifactId>
   <version>6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Pentaho DET proof of concept: ${project.artifactId}</name>
-  <description>DET proof of concept</description>
+  <name>Pentaho Data Explorer Tool</name>
+  <description>Data Explorer Tool</description>
   <url>http://www.pentaho.com/</url>
 
   <developers>
@@ -21,14 +21,17 @@
       <name>Guilherme Raimundo</name>
       <email>graimundo@pentaho.com</email>
       <roles>
-        <role>developer</role>
+        <role>architect</role>
       </roles>
     </developer>
   </developers>
 
   <properties>
-  </properties>
+    <plugin.org.codehaus.mojo.build-helper-maven-plugin.version>1.9.1</plugin.org.codehaus.mojo.build-helper-maven-plugin.version>
+    <plugin.org.apache.maven.plugins.maven-bundle-plugin.version>2.5.3</plugin.org.apache.maven.plugins.maven-bundle-plugin.version>
 
+    <dependency.pentaho-kettle.version>${project.version}</dependency.pentaho-kettle.version>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -64,6 +67,21 @@
         <artifactId>javax.ws.rs-api</artifactId>
         <version>2.0</version>
       </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.1.0</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+        <scope>provided</scope>
+      </dependency>
+
 
       <dependency>
         <groupId>commons-logging</groupId>
@@ -121,9 +139,51 @@
     </dependencies>
   </dependencyManagement>
 
+  <build>
+
+    <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${plugin.org.codehaus.mojo.build-helper-maven-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>${plugin.org.apache.maven.plugins.maven-bundle-plugin.version}</version>
+          <extensions>true</extensions>
+          <configuration>
+            <instructions>
+              <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+              <Bundle-Version>${project.version}</Bundle-Version>
+            </instructions>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <testFailureIgnore>false</testFailureIgnore>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
+  </build>
+
   <modules>
     <module>pentaho-det-api</module>
-    <module>pentaho-det</module>
+    <module>pentaho-det-core</module>
+
+    <module>pdi-det</module>
+
+
+    <!--
     <module>pentaho-requirejs-service-plugin</module>
     <module>pentaho-pluginA</module>
     <module>pentaho-pluginB</module>
@@ -132,6 +192,7 @@
     <module>ui-router-state-helper</module>
     <module>ui-router-extras</module>
     <module>pentaho-det-embed-examples</module>
+    -->
   </modules>
 
 </project>

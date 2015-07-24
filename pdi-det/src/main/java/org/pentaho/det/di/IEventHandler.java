@@ -15,15 +15,10 @@
  * Copyright (c) 2015 Pentaho Corporation. All rights reserved.
  */
 
-package com.pentaho.det.api.domain;
+package org.pentaho.det.di;
 
-import java.util.List;
 
-public interface IDataTable {
-
-  // TODO should be unique by name => use Map / Set ? Sets and Maps are not ordered.
-  List<IField> getFields();
-
-  List<IDataTableEntry> getEntries();
-
+public interface IEventHandler<TContext> {
+  void handle( TContext context );
+  Class<TContext> getTypeParameter();
 }
