@@ -1,0 +1,12 @@
+{
+  "paths": {
+    "com.pentaho.det": "DataExplorerTool/web"
+  },
+
+  "map": {
+    "*": {
+      "angular": "common-ui/angular",
+      "angular-resource": "common-ui/angular-resource"
+    }
+  }
+}

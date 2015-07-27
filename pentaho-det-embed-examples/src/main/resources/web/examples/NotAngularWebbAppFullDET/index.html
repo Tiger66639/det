@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">
+      //Replace @PENTAHO_SERVER_HOST@ with the location of your pentaho server
+      var pentaho_host = "@PENTAHO_SERVER_HOST@";
+      var CONTEXT_PATH = pentaho_host;
+
+      document.write("<script language='javascript' type='text/javascript' src='" + CONTEXT_PATH + "osgi/requirejs-manager/js/require-init.js'></scr"+"ipt>");
+      document.write("<script language='javascript' type='text/javascript' src='" + CONTEXT_PATH + "content/common-ui/resources/web/common-ui-require-js-cfg.js'></scr"+"ipt>");
+    </script>
+
+    <script type="text/javascript">
+      requireCfg.baseUrl = CONTEXT_PATH = pentaho_host + "osgi/";
+      requireCfg.config.text = {
+        onXhr: function(xhr, url) {
+          //Called after the XHR has been created and after the
+          //xhr.open() call, but before the xhr.send() call.
+          //Useful time to set headers.
+          //xhr: the xhr object
+          //url: the url that is being used with the xhr object.
+          xhr.withCredentials = true;
+        }
+      };
+
+      require.config( requireCfg );
+
+      require([ "com.pentaho.det/js/app" ], function( app ) {
+        app.init( document );
+      });
+    </script>
+
+    <title>Data Explorer Tool</title>
+    <!-- Bootstrap CSS -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body class="container">
+    <h1>Pentaho Angular</h1>
+    <h2>Embedded DET App</h2>
+
+    <div data-ui-view>
+
+    </div>
+
+  </body>
+
+</html>

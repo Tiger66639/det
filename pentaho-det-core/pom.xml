@@ -1,0 +1,168 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>pentaho</groupId>
+    <artifactId>pentaho-det-bundles</artifactId>
+    <version>6.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>pentaho-det-core</artifactId>
+  <packaging>bundle</packaging>
+
+  <name>Pentaho Data Explorer Tool Core </name>
+  <description>Pentaho Data Explorer Tool Core</description>
+  <url>http://www.pentaho.com/</url>
+
+  <developers>
+    <developer>
+      <name>Guilherme Raimundo</name>
+      <email>graimundo@pentaho.com</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+    </dependency>
+
+    <!--
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+    -->
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.pentaho</groupId>
+      <artifactId>pentaho-det-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              com.pentaho.det.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>src/main/resources/cfg/pentaho.det.cfg</file>
+                  <type>cfg</type>
+                  <classifier>pentaho-det-config</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--<plugin>-->
+        <!--<groupId>com.github.bringking</groupId>-->
+        <!--<artifactId>requirejs-maven-plugin</artifactId>-->
+        <!--<version>2.0.4</version>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<phase>compile</phase>-->
+            <!--<goals>-->
+              <!--<goal>optimize</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+        <!--<configuration>-->
+          <!--&lt;!&ndash; optional path to a nodejs executable &ndash;&gt;-->
+          <!--&lt;!&ndash;-->
+          <!--<nodeExecutable>-->
+            <!--/opt/nodejs/node-->
+          <!--</nodeExecutable>-->
+          <!--&ndash;&gt;-->
+
+          <!--&lt;!&ndash; path to optimizer json config file(s) &ndash;&gt;-->
+          <!--&lt;!&ndash;configFiles&ndash;&gt;-->
+            <!--<configFile>-->
+              <!--${basedir}/src/main/config/buildconfig.js-->
+            <!--</configFile>-->
+          <!--&lt;!&ndash;/configFiles&ndash;&gt;-->
+
+          <!--&lt;!&ndash; optional path to optimizer executable &ndash;&gt;-->
+          <!--<optimizerFile>-->
+            <!--${basedir}/src/main/scripts/r.js-->
+          <!--</optimizerFile>-->
+
+          <!--&lt;!&ndash; optional parameters to optimizer executable &ndash;&gt;-->
+          <!--<optimizerParameters>-->
+            <!--&lt;!&ndash;-->
+            <!--<parameter>appDir=${basedir}/src/main/resources/web</parameter>-->
+            <!--<parameter>baseUrl=.</parameter>-->
+            <!--<parameter>dir=${project.build.outputDirectory}/web</parameter>-->
+            <!--<parameter>optimizeAllPluginResources=true</parameter>-->
+            <!--<parameter>optimize=uglify2</parameter>-->
+            <!--&ndash;&gt;-->
+          <!--</optimizerParameters>-->
+          <!--&lt;!&ndash;-->
+          <!--Whether or not to process configFile with maven filters.-->
+          <!--If you use this option, some options in your configFile-->
+          <!--must resolve to absolute paths (see below)-->
+          <!--&ndash;&gt;-->
+          <!--<filterConfig>-->
+            <!--false-->
+          <!--</filterConfig>-->
+          <!--&lt;!&ndash; Skip requirejs optimization if true &ndash;&gt;-->
+          <!--<skip>-->
+            <!--false-->
+          <!--</skip>-->
+        <!--</configuration>-->
+      <!--</plugin>-->
+
+    </plugins>
+  </build>
+
+
+</project>

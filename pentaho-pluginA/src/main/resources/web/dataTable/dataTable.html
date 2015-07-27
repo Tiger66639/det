@@ -1,0 +1,59 @@
+<!--
+  ~ This program is free software; you can redistribute it and/or modify it under the
+  ~ terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software
+  ~ Foundation.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License along with this
+  ~ program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+  ~ or from the Free Software Foundation, Inc.,
+  ~ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  ~
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ Copyright (c) 2015 Pentaho Corporation. All rights reserved.
+  -->
+
+<div class="com.pentaho.det.dataA">
+  <h1>Main View - Plugin A</h1>
+
+  <div>
+    <label for="calcFunction">CalcFunction</label>
+    <input id="calcFunction" type="text" data-ng-model="viewModel.calcFunctionModel" value="AVG"/>
+  </div>
+
+  <pentaho-visual
+      data-datatable="viewModel.previewData"
+      data-visual-type="sample_calc"
+      data-requirement-calc="viewModel.calcFunctionModel"
+      >
+  </pentaho-visual>
+
+  <!-- TODO: change to table directive -->
+  <div style="max-height: 200px; overflow: auto;">
+    <table class="table table-striped"
+           data-st-table="viewModel.displayRowCollection"
+           data-st-safe-src="viewModel.previewData.rows">
+      <thead>
+        <tr>
+          <th data-ng-repeat="header in viewModel.previewData.cols"
+              data-st-sort="viewModel.getRowValue( {{$index}} )">
+            {{header.label}} ({{header.type}})
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-ng-repeat="row in viewModel.displayRowCollection">
+          <td data-ng-repeat="cell in row.c">
+            {{cell.v}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a data-ui-sref=".DataA_Child">Show child of DataA</a>
+  <div data-ui-view></div>
+
+</div>

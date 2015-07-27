@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "ct-ui-router-extras": "uiRouterExtras/web/js/routerExtras"
+  },
+
+  "shim": {
+    "ct-ui-router-extras": {
+      "deps": [ "angular-ui-router" ]
+    }
+  }
+}

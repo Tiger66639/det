@@ -1,0 +1,23 @@
+<div class="pentaho.det.app">
+  <!-- div data-ng-controller="com.pentaho.det.ApplicationController as appViewModel" -->
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <a class="brand" href="#">Home</a>
+        <ul class="nav">
+          <li data-ng-repeat="state in appViewModel.pluginStates">
+            <a data-ui-sref={{state.name}}>{{state.name}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <div class="well" data-ui-view></div>
+      </div>
+    </div>
+
+  <!--/div-->
+
+</div>
