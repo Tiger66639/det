@@ -28,13 +28,6 @@
   </cm:property-placeholder>
   <!-- END: Configuration -->
 
-
-  <!-- BA -->
-
-
-  <!-- Spoon Plugin -->
-<!-- UNCOMMENT FOR SPOON
-
   <bean id="dataSourceProviderAggregatorBean"
         class="com.pentaho.det.impl.domain.DataSourceProviderAggregator"
         scope="singleton">
@@ -48,18 +41,6 @@
                         unbind-method="removeDataSourceProvider"/>
   </reference-list>
 
-  <bean id="previewDataSourceProviderBean"
-        class="com.pentaho.det.impl.di.PreviewDataSourceProvider"
-        scope="singleton">
-    <pen:di-plugin type="org.pentaho.di.ui.spoon.SpoonUiExtenderPluginType"/>
-  </bean>
-
-  <service id="previewDataSourceProviderService"
-           interface="com.pentaho.det.api.services.IDataSourceProvider"
-           ref="previewDataSourceProviderBean">
-  </service>
-
--->
 
   <!-- Endpoints -->
   <cxf:bus id="DataExplorerToolImplBus">
@@ -67,13 +48,13 @@
 
   <jaxrs:server address="/DataExplorerTool" id="dataExplorerToolService">
     <jaxrs:serviceBeans>
-      <!-- UNCOMMENT FOR SPOON
-      <bean class="com.pentaho.det.impl.endpoints.DataSourceService" >
-        <property name="dataSourceProvider" ref="dataSourceProviderAggregatorBean"/>
-      </bean>
-      -->
+      <!--
       <bean class="com.pentaho.det.impl.endpoints.FakeDataSourceService"
             scope="singleton">
+      </bean>
+      -->
+      <bean class="com.pentaho.det.impl.endpoints.DataSourceService" >
+        <property name="dataSourceProvider" ref="dataSourceProviderAggregatorBean"/>
       </bean>
     </jaxrs:serviceBeans>
     <jaxrs:providers>
@@ -95,7 +76,6 @@
     </jaxrs:providers>
   </jaxrs:server>
 
-
   <!-- Client side -->
 
   <!-- HttpService Whiteboard registration of web assets -->
@@ -106,6 +86,5 @@
       <property name="path" value="/web"/>
     </bean>
   </service>
-
 
 </blueprint>

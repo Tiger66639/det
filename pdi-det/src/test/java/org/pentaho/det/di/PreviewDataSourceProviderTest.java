@@ -62,7 +62,7 @@ public class PreviewDataSourceProviderTest {
     Collection<String> expectedDataSourceNames = stepNames;
     TransDebugMetaWrapper debugMetaWrapper = createMockTransDebugMetaWrapper( stepNames );
 
-    assertThat( previewDataSourceProvider.getDataSources().keySet(), Matchers.empty() );
+    assertThat( previewDataSourceProvider.getDataSources().keySet(), empty() );
 
     previewDataSourceProvider.uiEvent( debugMetaWrapper, TransGraph.PREVIEW_TRANS );
 
@@ -71,7 +71,7 @@ public class PreviewDataSourceProviderTest {
     for( StepPreviewDataSource dataSource : actualDataSources.values() ) {
       actualDataSourceNames.add( dataSource.getName() );
     }
-    MatcherAssert.assertThat( actualDataSourceNames, Matchers.containsInAnyOrder( expectedDataSourceNames.toArray() ) );
+    assertThat( actualDataSourceNames, containsInAnyOrder( expectedDataSourceNames.toArray() ) );
 
   }
 
@@ -81,10 +81,10 @@ public class PreviewDataSourceProviderTest {
 
     Map<Class<?>, Set<String>> actualReponseMap = previewDataSourceProvider.respondsTo();
 
-    MatcherAssert.assertThat( actualReponseMap.entrySet(), Matchers.hasSize( 1 ) );
+    assertThat( actualReponseMap.entrySet(), hasSize( 1 ) );
     Map.Entry<Class<?>, Set<String> > firstEntry = actualReponseMap.entrySet().iterator().next();
-    MatcherAssert.assertThat( firstEntry.getKey().equals( TransDebugMetaWrapper.class ), Matchers.is( true ) );
-    MatcherAssert.assertThat( firstEntry.getValue(), Matchers.hasItem( TransGraph.PREVIEW_TRANS ) );
+    assertThat( firstEntry.getKey().equals( TransDebugMetaWrapper.class ), is( true ) );
+    assertThat( firstEntry.getValue(), hasItem( TransGraph.PREVIEW_TRANS ) );
 
   }
 
@@ -106,16 +106,16 @@ public class PreviewDataSourceProviderTest {
     TransDebugMeta mockDebugMeta = createMockTransDebugMeta( mockStepMetas );
     Trans mockTrans = createMockTrans( mockStepInterfaces );
 
-    TransDebugMetaWrapper mockDebugMetaWrapper = Mockito.mock( TransDebugMetaWrapper.class );
-    Mockito.when( mockDebugMetaWrapper.getTrans() ).thenReturn( mockTrans );
-    Mockito.when( mockDebugMetaWrapper.getTransDebugMeta() ).thenReturn( mockDebugMeta );
+    TransDebugMetaWrapper mockDebugMetaWrapper = mock( TransDebugMetaWrapper.class );
+    when( mockDebugMetaWrapper.getTrans() ).thenReturn( mockTrans );
+    when( mockDebugMetaWrapper.getTransDebugMeta() ).thenReturn( mockDebugMeta );
 
     return mockDebugMetaWrapper;
   }
 
   private Trans createMockTrans( final Iterable<StepInterface> stepInterfaces ) {
-    Trans mockTrans = Mockito.mock( Trans.class );
-    Mockito.when( mockTrans.findBaseSteps( Matchers.anyString() ) )
+    Trans mockTrans = mock( Trans.class );
+    when( mockTrans.findBaseSteps( anyString() ) )
       .then( new Answer<List<StepInterface>>() {
                private StepInterface findStep( String stepName ) {
                  for ( StepInterface stepInterface : stepInterfaces ) {
@@ -142,14 +142,14 @@ public class PreviewDataSourceProviderTest {
   }
 
   private TransDebugMeta createMockTransDebugMeta( Iterable<StepMeta> stepMetas ) {
-    TransDebugMeta mockDebugMeta = Mockito.mock( TransDebugMeta.class );
+    TransDebugMeta mockDebugMeta = mock( TransDebugMeta.class );
 
     Map<StepMeta, StepDebugMeta> stepMetaMap = new HashMap<>();
     for ( StepMeta stepMeta : stepMetas ) {
-      StepDebugMeta mockStepDebugMeta = Mockito.mock( StepDebugMeta.class );
+      StepDebugMeta mockStepDebugMeta = mock( StepDebugMeta.class );
       stepMetaMap.put( stepMeta, mockStepDebugMeta );
     }
-    Mockito.when( mockDebugMeta.getStepDebugMetaMap() ).thenReturn( stepMetaMap );
+    when( mockDebugMeta.getStepDebugMetaMap() ).thenReturn( stepMetaMap );
 
     return mockDebugMeta;
   }
@@ -157,8 +157,8 @@ public class PreviewDataSourceProviderTest {
   private Collection<StepMeta> createMockStepMetas( Iterable<String> stepNames ) {
     Collection<StepMeta> stepMetas = new ArrayList<>(  );
     for ( String stepName : stepNames ) {
-      StepMeta mockStepMeta = Mockito.mock( StepMeta.class );
-      Mockito.when( mockStepMeta.getName() ).thenReturn( stepName );
+      StepMeta mockStepMeta = mock( StepMeta.class );
+      when( mockStepMeta.getName() ).thenReturn( stepName );
       stepMetas.add( mockStepMeta );
     }
     return stepMetas;
@@ -168,9 +168,9 @@ public class PreviewDataSourceProviderTest {
     Collection<StepInterface> stepInterfaces = new ArrayList<>(  );
     for( StepMeta stepMeta : stepMetas ) {
       String stepName = stepMeta.getName();
-      StepInterface mockStepInterface = Mockito.mock( StepInterface.class );
-      Mockito.when( mockStepInterface.getStepMeta() ).thenReturn( stepMeta );
-      Mockito.when( mockStepInterface.getStepname() ).thenReturn( stepName );
+      StepInterface mockStepInterface = mock( StepInterface.class );
+      when( mockStepInterface.getStepMeta() ).thenReturn( stepMeta );
+      when( mockStepInterface.getStepname() ).thenReturn( stepName );
       stepInterfaces.add( mockStepInterface );
     }
     return stepInterfaces;

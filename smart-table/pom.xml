@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.pentaho</groupId>
-    <artifactId>pentaho-det-poc</artifactId>
+    <groupId>pentaho</groupId>
+    <artifactId>pentaho-det-bundles</artifactId>
     <version>6.0-SNAPSHOT</version>
   </parent>
 
@@ -22,6 +22,17 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>smart-table</artifactId>
+      <version>2.0.3-1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>ui-router-extras</artifactId>
+      <version>0.0.13</version>
+    </dependency>
 
   </dependencies>
 
