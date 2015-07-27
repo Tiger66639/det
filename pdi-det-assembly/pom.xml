@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>pentaho-det-bundles</artifactId>
+    <groupId>pentaho</groupId>
+    <version>6.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>pdi-det-assembly</artifactId>
+  <packaging>kar</packaging>
+
+  <name>Pentaho Data Explorer Tool for PDI Assembly</name>
+  <description>Pentaho Data Explorer Tool for PDI Assembly</description>
+  <url>http://www.pentaho.com/</url>
+
+  <dependencies>
+    <!--
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pdi-det</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    -->
+
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-det-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <!--
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-maven-plugin</artifactId>
+      </plugin>
+-->
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-maven-plugin</artifactId>
+        <version>3.0.3</version>
+        <extensions>true</extensions>
+        <configuration>
+          <aggregateFeatures>false</aggregateFeatures>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

@@ -32,6 +32,7 @@
     <plugin.org.apache.maven.plugins.maven-bundle-plugin.version>2.5.3</plugin.org.apache.maven.plugins.maven-bundle-plugin.version>
 
     <dependency.pentaho-kettle.version>${project.version}</dependency.pentaho-kettle.version>
+    <karaf.version>3.0.2</karaf.version>
   </properties>
 
   <dependencyManagement>
@@ -165,6 +166,16 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.karaf.tooling</groupId>
+          <artifactId>karaf-maven-plugin</artifactId>
+          <version>${karaf.version}</version>
+          <extensions>true</extensions>
+          <configuration>
+            <aggregateFeatures>true</aggregateFeatures>
+          </configuration>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
@@ -182,6 +193,9 @@
     <module>pentaho-det-core</module>
 
     <module>pdi-det</module>
+    <!--
+    <module>pdi-det-assembly</module>
+-->
     <module>pentaho-det</module>
 
     <module>pentaho-pluginA</module>
@@ -192,6 +206,7 @@
     <module>smart-table</module>
     <module>ui-router-state-helper</module>
     <module>ui-router-extras</module>
+
 
     <!--
 

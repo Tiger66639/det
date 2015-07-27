@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 public final class ColumnDefinitionDTO {
 
+  // TODO: these are the possible google data types
   public enum ColumnType { BOOLEAN, NUMBER, STRING, DATE, DATETIME, TIMEOFDAY }
 
   @XmlElement( required = true )
