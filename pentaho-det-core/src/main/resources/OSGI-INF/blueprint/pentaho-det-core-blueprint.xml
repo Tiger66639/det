@@ -29,12 +29,12 @@
   <!-- END: Configuration -->
 
   <bean id="dataSourceProviderAggregatorBean"
-        class="com.pentaho.det.impl.domain.DataSourceProviderAggregator"
+        class="org.pentaho.det.impl.domain.DataSourceProviderAggregator"
         scope="singleton">
   </bean>
 
   <reference-list id="dataSourceProviderList"
-                  interface="com.pentaho.det.api.services.IDataSourceProvider"
+                  interface="org.pentaho.det.api.services.IDataSourceProvider"
                   availability="optional">
     <reference-listener ref="dataSourceProviderAggregatorBean"
                         bind-method="addDataSourceProvider"
@@ -49,11 +49,11 @@
   <jaxrs:server address="/DataExplorerTool" id="dataExplorerToolService">
     <jaxrs:serviceBeans>
       <!--
-      <bean class="com.pentaho.det.impl.endpoints.FakeDataSourceService"
+      <bean class="FakeDataSourceService"
             scope="singleton">
       </bean>
       -->
-      <bean class="com.pentaho.det.impl.endpoints.DataSourceService" >
+      <bean class="org.pentaho.det.impl.endpoints.DataSourceService" >
         <property name="dataSourceProvider" ref="dataSourceProviderAggregatorBean"/>
       </bean>
     </jaxrs:serviceBeans>
