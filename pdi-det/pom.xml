@@ -44,6 +44,7 @@
       <artifactId>common-ui</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test dependencies -->

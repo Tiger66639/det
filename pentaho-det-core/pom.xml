@@ -72,6 +72,11 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!-- Client side dependencies -->
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-requirejs-osgi-manager</artifactId>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
