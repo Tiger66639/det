@@ -27,6 +27,12 @@
 
   <dependencies>
 
+    <!-- TODO: remove dependency on kettle? Move to pdi-det-->
+    <dependency>
+      <groupId>pentaho-kettle</groupId>
+      <artifactId>kettle-core</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
@@ -39,13 +45,29 @@
     </dependency>
     -->
 
+    <!-- TODO: use fasterxml? -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.pentaho</groupId>
+      <groupId>pentaho</groupId>
       <artifactId>pentaho-det-api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -75,7 +97,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              com.pentaho.det.*
+              org.pentaho.det.*
             </Export-Package>
           </instructions>
         </configuration>

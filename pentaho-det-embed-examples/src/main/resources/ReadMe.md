@@ -73,7 +73,7 @@ Here we have two examples of different use case scenarios on how to embed DET:
 
     require.config( requireCfg );
 
-    require([ "com.pentaho.det/js/app" ], function( app ) {
+    require([ "pentaho/det/js/app" ], function( app ) {
       app.init( document );
     });
   </script>
@@ -92,8 +92,8 @@ Here we have two examples of different use case scenarios on how to embed DET:
   require([ 
     "angular",
 
-    "com.pentaho.det.pluginA/app.module",
-    "com.pentaho.det.pluginB/app.module",
+    "pentaho/det/pluginA/app.module",
+    "pentaho/det/pluginB/app.module",
 
     'underscorejs',
 

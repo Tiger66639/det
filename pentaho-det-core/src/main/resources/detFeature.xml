@@ -20,7 +20,7 @@
   <feature install="auto" name="pentaho-data-explorer-tool" version="6.0-SNAPSHOT">
 
     <feature>cxf-jaxrs</feature>
-    <bundle>mvn:com.pentaho/pentaho-det/6.0-SNAPSHOT/</bundle>
+    <bundle>mvn:pentaho/pentaho-det/6.0-SNAPSHOT/</bundle>
 
     <!-- START client side dependencies -->
     <bundle>pentaho-webjars:mvn:org.webjars/angular-ui-router/0.2.13</bundle>

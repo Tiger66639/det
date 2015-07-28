@@ -1,4 +1,4 @@
-<features name="test-repo" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
+<features name="${project.artifactId}-repo" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0">
 
   <feature name="${project.artifactId}" version="${project.version}">
     <!-- START client side dependencies -->

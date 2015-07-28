@@ -17,13 +17,13 @@
 
 package org.pentaho.det.di;
 
-import com.pentaho.det.api.domain.IDataSource;
-import com.pentaho.det.api.domain.IDataTable;
-import com.pentaho.det.api.domain.IDataTableEntry;
-import com.pentaho.det.api.domain.IField;
-import com.pentaho.det.impl.domain.DataTable;
-import com.pentaho.det.impl.domain.DataTableEntry;
-import com.pentaho.det.impl.domain.Field;
+import org.pentaho.det.api.domain.IDataSource;
+import org.pentaho.det.api.domain.IDataTable;
+import org.pentaho.det.api.domain.IDataTableEntry;
+import org.pentaho.det.api.domain.IField;
+import org.pentaho.det.impl.domain.DataTable;
+import org.pentaho.det.impl.domain.DataTableEntry;
+import org.pentaho.det.impl.domain.Field;
 import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;

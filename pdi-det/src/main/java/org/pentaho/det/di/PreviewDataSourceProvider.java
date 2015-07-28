@@ -17,7 +17,7 @@
 
 package org.pentaho.det.di;
 
-import com.pentaho.det.api.services.IDataSourceProvider;
+import org.pentaho.det.api.services.IDataSourceProvider;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.debug.StepDebugMeta;
 import org.pentaho.di.trans.debug.TransDebugMeta;

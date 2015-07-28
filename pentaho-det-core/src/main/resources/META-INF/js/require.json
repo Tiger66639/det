@@ -1,6 +1,6 @@
 {
   "paths": {
-    "com.pentaho.det": "DataExplorerTool/web"
+    "pentaho/det": "DataExplorerTool/web"
   },
 
   "map": {
