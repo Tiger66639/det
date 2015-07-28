@@ -139,6 +139,13 @@
         <version>1.9.13</version>
       </dependency>
 
+      <dependency>
+        <groupId>pentaho</groupId>
+        <artifactId>pentaho-requirejs-osgi-manager</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
       <!-- Test Dependencies -->
       <dependency>
         <groupId>junit</groupId>
