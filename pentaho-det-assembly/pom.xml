@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2002 - 2015 Webdetails, a Pentaho company. All rights reserved.
+  ~
+  ~ This software was developed by Webdetails and is provided under the terms
+  ~ of the Mozilla Public License, Version 2.0, or any later version. You may not use
+  ~ this file except in compliance with the license. If you need a copy of the license,
+  ~ please go to http://mozilla.org/MPL/2.0/. The Initial Developer is Webdetails.
+  ~
+  ~ Software distributed under the Mozilla Public License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. Please refer to
+  ~ the license for the specific language governing your rights and limitations.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>pentaho-det-bundles</artifactId>
+    <groupId>pentaho</groupId>
+    <version>6.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>pentaho-det-assembly</artifactId>
+  <packaging>kar</packaging>
+
+  <name>Pentaho Data Explorer Tool for BA Assembly</name>
+  <description>Pentaho Data Explorer Tool for BA Assembly</description>
+  <url>http://www.pentaho.com/</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-det</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-maven-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </build>
+
+
+</project>

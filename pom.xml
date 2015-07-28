@@ -221,9 +221,7 @@
     <module>pentaho-det-core</module>
 
     <module>pdi-det</module>
-    <!--
     <module>pdi-det-assembly</module>
--->
     <module>pentaho-det</module>
 
     <module>pentaho-pluginA</module>
@@ -234,6 +232,7 @@
     <module>smart-table</module>
     <module>ui-router-state-helper</module>
     <module>ui-router-extras</module>
+    <module>pentaho-det-assembly</module>
 
 
     <!--

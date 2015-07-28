@@ -3,7 +3,6 @@
   <feature name="${project.artifactId}" version="${project.version}">
     <!-- START client side dependencies -->
     <bundle>pentaho-webjars:mvn:org.webjars/underscorejs/1.7.0</bundle>
-    <!--bundle>pentaho-platform-plugin-mvn:pentaho/common-ui/${project.version}/zip</bundle-->
     <!-- END -->
   </feature>
 
