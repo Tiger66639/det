@@ -26,24 +26,6 @@
     <script type="text/javascript" src="/requirejs-manager/js/require-init.js"></script>
 
     <script type="text/javascript">
-
-      var CONTEXT_PATH = "/pentaho/";
-      var FULL_QUALIFIED_URL = 'http://localhost:8080/pentaho/';
-      var SERVER_PROTOCOL = 'http';
-
-      <!-- Providing name for session -->
-      var SESSION_NAME = 'admin';
-      <!-- Providing computed Locale for session -->
-      var SESSION_LOCALE = 'en_US';
-      var HOME_FOLDER = '/home/admin';
-      var RESERVED_CHARS = "\/\\\t\r\n";
-      var RESERVED_CHARS_DISPLAY = "\/, \\, \\t, \\r, \\n";
-      var RESERVED_CHARS_REGEX_PATTERN = /.*[\/\\\t\r\n]+.*/;
-
-      //document.write("<script language='javascript' type='text/javascript' src='" + CONTEXT_PATH + "content/common-ui/resources/web/common-ui-require-js-cfg.js'></scr"+"ipt>");
-    </script>
-
-    <script type="text/javascript">
       require.config( requireCfg );
       require([ "pentaho/det/js/app" ], function( app ) {
         app.init( document );

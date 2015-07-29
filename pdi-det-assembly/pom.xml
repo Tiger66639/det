@@ -24,6 +24,12 @@
       <version>${project.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-pluginA</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
   </dependencies>
 
   <build>

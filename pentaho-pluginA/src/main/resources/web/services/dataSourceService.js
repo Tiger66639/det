@@ -24,7 +24,10 @@ define(
         //var baseUrl = (CONTEXT_PATH === '/' ? '/pentaho/osgi/' : CONTEXT_PATH) + 'cxf/DataExplorerTool/det';
 
         // baseURL BA server
-        var baseUrl = CONTEXT_PATH + 'osgi/cxf/DataExplorerTool/det';
+        //var baseUrl = CONTEXT_PATH + 'osgi/cxf/DataExplorerTool/det';
+
+        // baseURL PDI
+        var baseUrl = CONTEXT_PATH + 'cxf/DataExplorerTool/det';
 
         var DataSource = $resource( baseUrl + '/dataSources/:uuid',
             { uuid: '@uuid', name:'@name' },
