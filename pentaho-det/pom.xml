@@ -17,6 +17,14 @@
   <description>Pentaho Data Explorer Tool for BA Server</description>
   <url>http://www.pentaho.com/</url>
 
+  <dependencies>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-det-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
