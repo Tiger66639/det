@@ -194,7 +194,6 @@
 
 
     <!-- TODO Remove temporary modules -->
-    <module>pentaho-requirejs-service-plugin</module>
     <module>require-amd</module>
     <module>smart-table</module>
     <module>ui-router-state-helper</module>
