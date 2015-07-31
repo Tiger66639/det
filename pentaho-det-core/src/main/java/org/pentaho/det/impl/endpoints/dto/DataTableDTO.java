@@ -25,14 +25,12 @@ import javax.xml.bind.annotation.XmlElement;
 public final class DataTableDTO {
 
   @XmlElement( name = "cols" )
-  //public List<ColumnDefinitionDTO> cols;
   public List<ColumnDefinitionDTO> cols;
 
   @XmlElement( name = "rows" )
   public List<RowDTO> rows;
 
   @XmlElement( name = "p" )
-  //public Object p;
   public Object p;
 
   public DataTableDTO() {
@@ -67,8 +65,7 @@ public final class DataTableDTO {
 
     if ( dataTable != null ) {
       for ( IField field : dataTable.getFields() ) {
-        ColumnDefinitionDTO columnDefinitionDTO = new ColumnDefinitionDTO( field.getType(), field.getName() );
-        this.cols.add( columnDefinitionDTO );
+        this.cols.add( new ColumnDefinitionDTO( field.getType(), field.getName() ) );
       }
 
       for ( IDataTableEntry dataTableEntry : dataTable.getEntries() ) {

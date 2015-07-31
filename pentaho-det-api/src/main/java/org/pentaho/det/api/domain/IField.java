@@ -15,9 +15,11 @@ package org.pentaho.det.api.domain;
 
 public interface IField {
 
+  public enum ColumnType { BOOLEAN, NUMBER, STRING, DATE, DATETIME, TIMEOFDAY }
+
   String getName();
 
   // TODO: should be "complex" type
-  String getType();
+  ColumnType getType();
 
 }
