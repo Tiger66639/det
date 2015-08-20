@@ -13,8 +13,13 @@
 
 package org.pentaho.det.impl.endpoints.dto;
 
+import org.pentaho.det.impl.domain.adapter.RowValueAdapter;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public final class RowDTO {
@@ -22,6 +27,7 @@ public final class RowDTO {
   public static final class CellDTO<T> {
 
     @XmlElement( name = "v" )
+    @XmlJavaTypeAdapter( RowValueAdapter.class )
     //public T value;
     public T v;
 

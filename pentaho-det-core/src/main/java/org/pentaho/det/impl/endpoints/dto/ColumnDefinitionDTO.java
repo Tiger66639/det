@@ -14,12 +14,15 @@
 package org.pentaho.det.impl.endpoints.dto;
 
 import org.pentaho.det.api.domain.IField.ColumnType;
+import org.pentaho.det.impl.domain.adapter.ColumnTypeAdapter;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public final class ColumnDefinitionDTO {
 
   @XmlElement( required = true )
+  @XmlJavaTypeAdapter( ColumnTypeAdapter.class )
   public ColumnType type;
 
   @XmlElement( name = "id" )
