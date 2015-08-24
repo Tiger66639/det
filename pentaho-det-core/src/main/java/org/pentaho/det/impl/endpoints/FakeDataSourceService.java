@@ -13,6 +13,7 @@
 
 package org.pentaho.det.impl.endpoints;
 
+import org.pentaho.det.api.domain.IField.ColumnType;
 import org.pentaho.det.impl.endpoints.dto.ColumnDefinitionDTO;
 import org.pentaho.det.impl.endpoints.dto.DataSourceDTO;
 import org.pentaho.det.impl.endpoints.dto.DataTableDTO;
@@ -36,12 +37,11 @@ public class FakeDataSourceService implements IDataSourceService {
   public FakeDataSourceService() {
     this.dataSource = new DataSourceDTO().setUUID( UUID.randomUUID() ).setName( "fakeDataSource" );
 
-    ColumnDefinitionDTO.ColumnType[] columnTypes = new ColumnDefinitionDTO.ColumnType[] {
-        ColumnDefinitionDTO.ColumnType.STRING,
-        ColumnDefinitionDTO.ColumnType.NUMBER
+    ColumnType[] columnTypes = new ColumnType[] {
+        ColumnType.STRING,
+        ColumnType.NUMBER
     };
     this.dataTableDTO = this.createDataTableDTO( Arrays.asList( columnTypes ), 100 );
-    //this.dataTableDTO = this.createDataTableDTO( 2, 100 );
   }
 
   @Override public Collection<DataSourceDTO> getDataSources() {
@@ -62,7 +62,7 @@ public class FakeDataSourceService implements IDataSourceService {
   private DataTableDTO createDataTableDTO( int numberOfColumns, int numberOfRows ) {
     DataTableDTO dataTable = new DataTableDTO( );
     for ( int iColumnDefinition = 0; iColumnDefinition < numberOfColumns; iColumnDefinition++ ) {
-      ColumnDefinitionDTO columnDefinition = new ColumnDefinitionDTO( ColumnDefinitionDTO.ColumnType.STRING, "column" + iColumnDefinition );
+      ColumnDefinitionDTO columnDefinition = new ColumnDefinitionDTO( ColumnType.STRING, "column" + iColumnDefinition );
       dataTable.cols.add( columnDefinition );
     }
 
@@ -79,10 +79,10 @@ public class FakeDataSourceService implements IDataSourceService {
 
   }
 
-  private DataTableDTO createDataTableDTO( Iterable<ColumnDefinitionDTO.ColumnType> columnTypes, int numberOfRows ) {
+  private DataTableDTO createDataTableDTO( Iterable<ColumnType> columnTypes, int numberOfRows ) {
     DataTableDTO dataTable = new DataTableDTO( );
     int columLabelIdx = 0;
-    for ( ColumnDefinitionDTO.ColumnType columnType : columnTypes ) {
+    for ( ColumnType columnType : columnTypes ) {
       ColumnDefinitionDTO columnDefinition = new ColumnDefinitionDTO( columnType, "column" + columLabelIdx++ );
       dataTable.cols.add( columnDefinition );
     }
@@ -95,9 +95,9 @@ public class FakeDataSourceService implements IDataSourceService {
     return dataTable;
   }
 
-  private RowDTO createRow( Iterable<ColumnDefinitionDTO.ColumnType> columnTypes ) {
+  private RowDTO createRow( Iterable<ColumnType> columnTypes ) {
     List<Object> rowData = new ArrayList<>(  );
-    for ( ColumnDefinitionDTO.ColumnType columnType : columnTypes ) {
+    for ( ColumnType columnType : columnTypes ) {
       Object value = this.createRandomValue( columnType );
       rowData.add( value );
     }
@@ -105,10 +105,9 @@ public class FakeDataSourceService implements IDataSourceService {
     return row;
   }
 
-  private Object createRandomValue( ColumnDefinitionDTO.ColumnType valueType ) {
+  private Object createRandomValue( ColumnType valueType ) {
+
     switch ( valueType ) {
-      case STRING:
-        return UUID.randomUUID().toString();
       case NUMBER:
         return Math.random() * 100;
       default:

@@ -14,6 +14,7 @@
 package org.pentaho.det.impl.domain;
 
 import org.pentaho.det.api.domain.IField;
+import org.pentaho.det.impl.domain.mapper.MapKettleToGoogleDataTable;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
 public final class Field implements IField {
@@ -33,25 +34,34 @@ public final class Field implements IField {
   private String name;
 
 
-  @Override public String getType() {
+  @Override public ColumnType getType() {
     return this.type;
   }
-  public Field setType( String type ) {
+  public Field setType( ColumnType type ) {
     this.type = type;
     return this;
   }
-  private String type;
+  private ColumnType type;
+
+  public MapKettleToGoogleDataTable getMapping() {
+    return this.mapping;
+  }
+  public void setMapping( MapKettleToGoogleDataTable map ) {
+    this.mapping = map;
+  }
+  private MapKettleToGoogleDataTable mapping;
 
   // endregion
 
   // region Constructors
   public Field() {
-
+    this.mapping = new MapKettleToGoogleDataTable();
   }
 
   public Field( ValueMetaInterface valueMeta ) {
+    this();
     this.setName( valueMeta.getName() )
-        .setType( valueMeta.getTypeDesc() );  // TODO Convert type properly
+        .setType( mapping.getDataType( valueMeta ) );  // TODO Convert type properly
   }
 
   @Override public boolean equals( Object o ) {
