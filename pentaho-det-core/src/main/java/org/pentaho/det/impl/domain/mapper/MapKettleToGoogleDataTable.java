@@ -16,6 +16,7 @@ package org.pentaho.det.impl.domain.mapper;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.det.api.domain.IField.ColumnType;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,7 +95,7 @@ public class MapKettleToGoogleDataTable {
         this.mapping = map;
     }
     public Map<Integer, ColumnType> getMapping() {
-        return this.mapping;
+        return Collections.unmodifiableMap( this.mapping );
     }
     private Map<Integer, ColumnType> mapping;
     //endregion
@@ -132,7 +133,27 @@ public class MapKettleToGoogleDataTable {
     }
 
     /**
-     * Gets the corresponding Google DataTable data type for the given kettle data type
+     * Removes an existing entry of the mapping between a kettle data type and a Google DataTable data type
+     *
+     * @param valueMetaInterface Kettle data type
+     */
+    public void removeMapValue( ValueMetaInterface valueMetaInterface ) {
+        this.removeMapValue( valueMetaInterface.getType() );
+    }
+
+    /**
+     * Removes an existing entry of the mapping between a kettle data type and a Google DataTable data type
+     *
+     * @param valueType Integer identifying a kettle data type
+     */
+    public void removeMapValue( Integer valueType ) {
+        this.mapping.remove( valueType );
+    }
+
+
+    /**
+     * Gets the corresponding Google DataTable data type for the given kettle data type. If
+     * the given kettle Data Type isn't mapped, it will fallback to the default, ColumnType.STRING
      *
      * @param valueMetaInterface kettle data type
      *
@@ -143,7 +164,8 @@ public class MapKettleToGoogleDataTable {
     }
 
     /**
-     * Gets the corresponding Google DataTable data type for the given kettle data type
+     * Gets the corresponding Google DataTable data type for the given kettle data type. If
+     * the given kettle Data Type isn't mapped, it will fallback to the default, ColumnType.STRING
      *
      * @param valueType Integer identifying a kettle data type
      *

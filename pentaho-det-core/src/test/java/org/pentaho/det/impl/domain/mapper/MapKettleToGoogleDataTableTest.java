@@ -24,6 +24,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static junit.framework.Assert.assertEquals;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.not;
+
 public class MapKettleToGoogleDataTableTest {
 
     // region Tests
@@ -65,6 +69,18 @@ public class MapKettleToGoogleDataTableTest {
 
         mapper.addMapValue( valueMeta, type );
         assertEquals( type, mapper.getDataType( valueMeta ) );
+    }
+
+    @Test
+    public void testRemoveMapValue() {
+        MapKettleToGoogleDataTable mapper = this.createDefaultMapper();
+
+        Integer metaType = ValueMetaInterface.TYPE_BIGNUMBER;
+        ColumnType colType = ColumnType.NUMBER;
+
+        assertThat(mapper.getMapping(), hasEntry(metaType, colType));
+        mapper.removeMapValue( metaType );
+        assertThat(mapper.getMapping(), not(hasEntry(metaType, colType)));
     }
     //endregion
 
