@@ -15,33 +15,36 @@ package org.pentaho.det.impl.domain.mapper;
 
 import org.junit.Test;
 import org.pentaho.det.api.domain.IField.ColumnType;
+import org.pentaho.det.api.domain.mapper.IConverter;
+import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.not;
 
 public class MapKettleToGoogleDataTableTest {
 
     // region Tests
     @Test
-    public void testDefaultConfiguration() {
+    public void testDefaultTypeMapConfiguration() {
         MapKettleToGoogleDataTable mapper = this.createDefaultMapper();
-
-        Map<Integer, ColumnType> stringMap = mapper.getMapping();
+        Map<Integer, ColumnType> typeMapping = mapper.getTypeMapping();
         Map<Integer, ColumnType> expectedMap = this.createDefaultStringMap();
 
-        assertEquals( expectedMap.size(), stringMap.size() );
-        for( Integer key : expectedMap.keySet() ) {
-            assertEquals( expectedMap.get(key), stringMap.get(key) );
-        }
+        assertThatMapsEqual( typeMapping, expectedMap );
     }
 
     @Test
@@ -49,26 +52,31 @@ public class MapKettleToGoogleDataTableTest {
         MapKettleToGoogleDataTable mapper = this.createDefaultMapper();
 
         ColumnType expectedDataType = ColumnType.NUMBER;
-        assertEquals( expectedDataType, mapper.getDataType( ValueMetaInterface.TYPE_INTEGER ) );
+        ColumnType returnedDataType = mapper.getDataType( ValueMetaInterface.TYPE_INTEGER );
+
+        assertThat( returnedDataType, is( equalTo( expectedDataType ) ) );
     }
 
     @Test
     public void testGetDataTypeDefault() {
         MapKettleToGoogleDataTable mapper = this.createEmptyMapper();
-        ColumnType defaultType = ColumnType.STRING;
         ValueMetaInterface valueMeta = this.createValueMetaInterface( -1 );
 
-        assertEquals( defaultType, mapper.getDataType( valueMeta ) );
+        ColumnType defaultType = ColumnType.STRING;
+        ColumnType returnedDataType = mapper.getDataType(valueMeta.getType());
+
+        assertThat( returnedDataType, is( equalTo( defaultType ) ) );
     }
 
     @Test
-    public void testAddMapValue() {
+    public void testAddDataType() {
         MapKettleToGoogleDataTable mapper = this.createEmptyMapper();
         ValueMetaInterface  valueMeta = this.createValueMetaInterface( 99 );
-        ColumnType type = ColumnType.NUMBER;
 
-        mapper.addMapValue( valueMeta, type );
-        assertEquals( type, mapper.getDataType( valueMeta ) );
+        ColumnType type = ColumnType.NUMBER;
+        mapper.addDataType(valueMeta.getType(), type);
+
+        assertThat( mapper.getTypeMapping(), hasEntry(valueMeta.getType(), type) );
     }
 
     @Test
@@ -78,9 +86,46 @@ public class MapKettleToGoogleDataTableTest {
         Integer metaType = ValueMetaInterface.TYPE_BIGNUMBER;
         ColumnType colType = ColumnType.NUMBER;
 
-        assertThat(mapper.getMapping(), hasEntry(metaType, colType));
-        mapper.removeMapValue( metaType );
-        assertThat(mapper.getMapping(), not(hasEntry(metaType, colType)));
+        assertThat( mapper.getTypeMapping(), hasEntry( metaType, colType ) );
+        mapper.removeDataType(metaType);
+        assertThat( mapper.getTypeMapping(), not( hasEntry( metaType, colType ) ) );
+    }
+
+    @Test
+    public void testGetConverter() {
+        try {
+            MapKettleToGoogleDataTable mapper = this.createDefaultMapper();
+
+            IConverter expectedConverter = new DateToCalendarConverter();
+            IConverter returnedConverter = mapper.getConverter( ValueMetaInterface.TYPE_DATE );
+
+            assertThat( returnedConverter, is( equalTo( expectedConverter ) ) );
+        } catch (KettleValueException e) {
+            fail("Shouldn't throw an exception");
+        }
+    }
+
+    @Test
+    public void testAddConverter() {
+        MapKettleToGoogleDataTable mapper = this.createEmptyMapper();
+        ValueMetaInterface  valueMeta = this.createValueMetaInterface( 99 );
+
+        IConverter converter = new DateToCalendarConverter();
+        mapper.addConverter(valueMeta.getType(), converter);
+
+        assertThat( mapper.getConverterMapping(), hasEntry( valueMeta.getType(), converter ) );
+    }
+
+    @Test
+    public void testRemoveConverter() {
+        MapKettleToGoogleDataTable mapper = this.createDefaultMapper();
+
+        Integer metaType = ValueMetaInterface.TYPE_DATE;
+        IConverter converter = new DateToCalendarConverter();
+
+        assertThat( mapper.getConverterMapping(), hasEntry( equalTo( metaType ), equalTo( converter ) ) );
+        mapper.removeConverter( metaType );
+        assertThat( mapper.getConverterMapping(), not( hasEntry( equalTo( metaType ), equalTo( converter ) ) ) );
     }
     //endregion
 
@@ -91,7 +136,7 @@ public class MapKettleToGoogleDataTableTest {
     }
 
     private MapKettleToGoogleDataTable createEmptyMapper() {
-        return new MapKettleToGoogleDataTable( new HashMap<Integer, ColumnType>() );
+        return new MapKettleToGoogleDataTable( new HashMap<Integer, ColumnType>(), new HashMap<Integer, IConverter>() );
     }
 
     private Map<Integer, ColumnType> createDefaultStringMap() {
@@ -114,6 +159,16 @@ public class MapKettleToGoogleDataTableTest {
 
         return vmi;
     }
-    //endregion
 
+    /**
+     * Asserts that all entries of {@code mapA} are in {@code mapB} and that all entries of {@code mapB} are in {@code mapA}.
+     */
+    private <K,V> void assertThatMapsEqual( Map<K, V> mapA, Map<K, V> mapB ) {
+        Set<Map.Entry<K, V>> entrySetA = mapA.entrySet();
+        Set<Map.Entry<K, V>> entrySetB = mapB.entrySet();
+
+        assertThat(entrySetA, everyItem(isIn(entrySetB)));
+        assertThat(entrySetB, everyItem(isIn(entrySetA)));
+    }
+    //endregion
 }

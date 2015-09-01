@@ -17,16 +17,20 @@ import org.pentaho.det.api.domain.IDataSource;
 import org.pentaho.det.api.domain.IDataTable;
 import org.pentaho.det.api.domain.IDataTableEntry;
 import org.pentaho.det.api.domain.IField;
+import org.pentaho.det.api.domain.mapper.IConverter;
 import org.pentaho.det.impl.domain.DataTable;
 import org.pentaho.det.impl.domain.DataTableEntry;
 import org.pentaho.det.impl.domain.Field;
+import org.pentaho.det.impl.domain.mapper.MapKettleToGoogleDataTable;
 import org.pentaho.di.core.exception.KettleStepException;
+import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.trans.step.RowAdapter;
 import org.pentaho.di.trans.step.RowListener;
 import org.pentaho.di.trans.step.StepInterface;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -37,22 +41,50 @@ public class StepPreviewDataSource implements IDataSource {
   private static final class CacheStepWrittenRowsRowListener extends RowAdapter {
 
     private final IDataTable dataTable;
+    private final MapKettleToGoogleDataTable mapping;
 
-    public CacheStepWrittenRowsRowListener( IDataTable dataTable ) {
+    public CacheStepWrittenRowsRowListener( IDataTable dataTable, MapKettleToGoogleDataTable map ) {
       this.dataTable = dataTable;
+      this.mapping = map;
     }
 
     @Override public void rowWrittenEvent( RowMetaInterface rowMeta, Object[] rowData )
       throws KettleStepException {
 
-      Object[] rowDataTrimmed = Arrays.copyOf( rowData, rowMeta.size() );
-      IDataTableEntry entry = new DataTableEntry( Arrays.asList( rowDataTrimmed ) );
+      List<Object> rowDataList = this.handleRowDataValues( rowMeta, rowData );
+
+      IDataTableEntry entry = new DataTableEntry( rowDataList );
       this.dataTable.getEntries().add( entry );
+
+      this.initFields( rowMeta );
+    }
+
+    private List<Object> handleRowDataValues( RowMetaInterface rowMeta, Object[] rowData ) throws KettleStepException {
+      Object[] rowDataTrimmed = Arrays.copyOf( rowData, rowMeta.size() );
+
+      List<Object> dataList = new ArrayList<Object>();
+      for ( int i = 0; i < rowMeta.size(); i++ ) {
+        try {
+          ValueMetaInterface valueMeta = rowMeta.getValueMeta( i );
+          IConverter converter = mapping.getConverter( valueMeta.getType() );
+
+          dataList.add( converter.convertObject( rowDataTrimmed[i], valueMeta ) );
+
+        } catch ( KettleValueException kve ) {
+          throw new KettleStepException( kve.getMessage() );
+        }
+      }
+
+      return dataList;
+    }
+
+    private void initFields( RowMetaInterface rowMeta ) {
       List<IField> fields = this.dataTable.getFields();
       // check if fields have been set
-      if ( fields.size() == 0 ) { // TODO: better way to check if fields have been initialized
+      if ( fields.size() == 0 ) { //TODO: better way to check if fields have been initialized
         for ( ValueMetaInterface valueMeta : rowMeta.getValueMetaList() ) {
           Field field = new Field( valueMeta );
+          field.setType( mapping.getDataType( valueMeta.getType() ) );
           fields.add( field );
         }
       }
@@ -79,6 +111,14 @@ public class StepPreviewDataSource implements IDataSource {
   }
   private IDataTable dataTable;
 
+  public MapKettleToGoogleDataTable getMapping() {
+    return this.mapping;
+  }
+  public void setMapping( MapKettleToGoogleDataTable map ) {
+    this.mapping = map;
+  }
+  private MapKettleToGoogleDataTable mapping;
+
   public StepInterface getStep() {
     return this.step;
   }
@@ -89,7 +129,7 @@ public class StepPreviewDataSource implements IDataSource {
     }
 
     this.step = step;
-    this.rowListener = new CacheStepWrittenRowsRowListener( this.dataTable );
+    this.rowListener = new CacheStepWrittenRowsRowListener( this.dataTable, this.mapping );
     this.step.addRowListener( this.rowListener );
   }
   private StepInterface step;
@@ -101,6 +141,7 @@ public class StepPreviewDataSource implements IDataSource {
   public StepPreviewDataSource( StepInterface step ) {
     this.uuid = UUID.randomUUID();
     this.dataTable = new DataTable();
+    this.mapping = new MapKettleToGoogleDataTable();
     this.setStep( step );
   }
   // endregion
