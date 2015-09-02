@@ -13,9 +13,14 @@
 
 package org.pentaho.det.impl.domain.mapper;
 
-import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.det.api.domain.IField.ColumnType;
 
+import org.pentaho.det.api.domain.IField.ColumnType;
+import org.pentaho.det.api.domain.mapper.IConverter;
+import org.pentaho.det.api.domain.mapper.IMapKettleToGoogleDataType;
+import org.pentaho.di.core.exception.KettleValueException;
+import org.pentaho.di.core.row.ValueMetaInterface;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,91 +92,129 @@ import java.util.Map;
  * | datetime    | Date, Timestamp            |
  * +-------------+----------------------------+
  */
-public class MapKettleToGoogleDataTable {
+public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
 
-    //region Properties
-    public void setMapping( Map<Integer, ColumnType> map ) {
-        this.mapping = map;
+    //region properties
+    @Override
+    public void setTypeMapping( Map<Integer, ColumnType> map ) {
+        this.typeMapping = map;
     }
-    public Map<Integer, ColumnType> getMapping() {
-        return this.mapping;
+    @Override
+    public Map<Integer, ColumnType> getTypeMapping() {
+        return Collections.unmodifiableMap( this.typeMapping );
     }
-    private Map<Integer, ColumnType> mapping;
+    private Map<Integer, ColumnType> typeMapping;
+
+    @Override
+    public void setConverterMapping( Map<Integer, IConverter> map ) {
+        this.converterMapping = map;
+    }
+    @Override
+    public Map<Integer, IConverter> getConverterMapping() {
+        return this.converterMapping;
+    }
+    private Map<Integer, IConverter> converterMapping;
     //endregion
 
     //region Constructors
     public MapKettleToGoogleDataTable() {
-        this.mapping = defaultMapConfiguration();
+        this.typeMapping = defaultTypeMapConfiguration();
+        this.converterMapping = defaultConverterConfiguration();
     }
 
-    public MapKettleToGoogleDataTable( HashMap<Integer, ColumnType> stringMap ) {
-        this.mapping = stringMap;
+    public MapKettleToGoogleDataTable( HashMap<Integer, ColumnType> map, Map<Integer, IConverter> converterMap ) {
+        this.typeMapping = map;
+        this.converterMapping = converterMap;
     }
     //endregion
 
-    //region Methods
-
     /**
      * Adds a new mapping entry between a kettle data type and a Google DataTable data type
      *
-     * @param valueMetaInterface Kettle data type
-     * @param columnType         Google DataTable data type
-     */
-    public void addMapValue( ValueMetaInterface valueMetaInterface, ColumnType columnType ) {
-        this.addMapValue( valueMetaInterface.getType(), columnType );
-    }
-
-    /**
-     * Adds a new mapping entry between a kettle data type and a Google DataTable data type
-     *
-     * @param valueType  Integer identifying a kettle data type
+     * @param kettleType Kettle data type
      * @param columnType Google DataTable data type
      */
-    public void addMapValue( Integer valueType, ColumnType columnType ) {
-        this.mapping.put( valueType, columnType );
+    @Override
+    public void addDataType( Integer kettleType, ColumnType columnType ) {
+        this.typeMapping.put( kettleType, columnType );
     }
 
     /**
-     * Gets the corresponding Google DataTable data type for the given kettle data type
+     * Removes an existing entry of the mapping between a kettle data type and a Google DataTable data type
      *
-     * @param valueMetaInterface kettle data type
-     *
-     * @return Google DataTable data type
+     * @param kettleType Kettle data type
      */
-    public ColumnType getDataType( ValueMetaInterface valueMetaInterface ) {
-        return this.getDataType( valueMetaInterface.getType() );
+    @Override
+    public void removeDataType( Integer kettleType ) {
+        this.typeMapping.remove( kettleType );
     }
 
     /**
-     * Gets the corresponding Google DataTable data type for the given kettle data type
+     * Gets the corresponding Google DataTable data type for the given kettle data type. If
+     * the given kettle Data Type isn't mapped, it will fallback to the default, ColumnType.STRING
      *
-     * @param valueType Integer identifying a kettle data type
+     * @param kettleType kettle data type
      *
      * @return Google DataTable data type
      */
-    public ColumnType getDataType( Integer valueType ) {
-        ColumnType colType = this.mapping.get( valueType );
+    @Override
+    public ColumnType getDataType( Integer kettleType ) {
+        ColumnType colType = this.typeMapping.get( kettleType );
 
-        if( colType != null ) {
-            return colType;
-        } else {
-            return ColumnType.STRING;
+        if ( colType == null ) {
+            colType = ColumnType.STRING;
         }
+
+        return colType;
     }
 
-    /**
-     * Returns a mapping object with the default configuration
-     */
-    private Map<Integer, ColumnType> defaultMapConfiguration() {
+    @Override
+    public void addConverter( Integer kettleType, IConverter converter ) {
+        this.converterMapping.put( kettleType, converter );
+    }
+
+    @Override
+    public void removeConverter( Integer kettleType ) {
+       this.converterMapping.remove( kettleType );
+    }
+
+    @Override
+    public IConverter getConverter( Integer kettleType ) throws KettleValueException {
+        IConverter converter = this.converterMapping.get( kettleType );
+
+        if ( converter == null) {
+            converter = new IConverter() {
+                @Override
+                public Object convertObject(Object originalValue, ValueMetaInterface valueMeta) throws KettleValueException {
+                    return valueMeta.convertToNormalStorageType( originalValue );
+                }
+            };
+        }
+
+        return converter;
+    }
+
+    //region private
+    private Map<Integer, ColumnType> defaultTypeMapConfiguration() {
         Map<Integer, ColumnType> defaultConfig = new HashMap<Integer, ColumnType>();
 
-        defaultConfig.put( ValueMetaInterface.TYPE_INTEGER, ColumnType.NUMBER );
-        defaultConfig.put( ValueMetaInterface.TYPE_NUMBER, ColumnType.NUMBER );
+        defaultConfig.put( ValueMetaInterface.TYPE_INTEGER,   ColumnType.NUMBER );
+        defaultConfig.put( ValueMetaInterface.TYPE_NUMBER,    ColumnType.NUMBER );
         defaultConfig.put( ValueMetaInterface.TYPE_BIGNUMBER, ColumnType.NUMBER );
-        defaultConfig.put( ValueMetaInterface.TYPE_BOOLEAN, ColumnType.BOOLEAN );
-        defaultConfig.put( ValueMetaInterface.TYPE_DATE, ColumnType.DATETIME );
+        defaultConfig.put( ValueMetaInterface.TYPE_BOOLEAN,   ColumnType.BOOLEAN );
+        defaultConfig.put( ValueMetaInterface.TYPE_DATE,      ColumnType.DATETIME );
         defaultConfig.put( ValueMetaInterface.TYPE_TIMESTAMP, ColumnType.DATETIME );
-        defaultConfig.put( ValueMetaInterface.TYPE_STRING, ColumnType.STRING );
+        defaultConfig.put( ValueMetaInterface.TYPE_STRING,    ColumnType.STRING );
+
+        return defaultConfig;
+    }
+
+    private Map<Integer, IConverter> defaultConverterConfiguration() {
+        Map<Integer, IConverter> defaultConfig = new HashMap<Integer, IConverter>();
+
+        IConverter dateConvert = new DateToCalendarConverter();
+        defaultConfig.put( ValueMetaInterface.TYPE_DATE,      dateConvert );
+        defaultConfig.put( ValueMetaInterface.TYPE_TIMESTAMP, dateConvert );
 
         return defaultConfig;
     }

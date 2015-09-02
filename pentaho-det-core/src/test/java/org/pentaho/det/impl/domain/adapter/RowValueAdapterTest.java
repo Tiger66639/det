@@ -17,6 +17,9 @@ package org.pentaho.det.impl.domain.adapter;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -25,16 +28,15 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class RowValueAdapterTest {
 
-
     @Test
     public void testDateMarshal() throws Exception {
         RowValueAdapter adapter = this.createRowValueAdapter();
 
-        Object value = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.S").parse("2000/04/25 13:37:00.666");
-        Object expectedResult = "Date(2000, 3, 25, 13, 37, 0, 666)";
+        Object value = this.createCalendar( "yyyy/MM/dd HH:mm:ss.S", "2000/04/25 13:37:00.666" );
+        Object expectedResult = "2000-04-25T13:37:00.666Z";
 
-        Object result = adapter.marshal(value);
-        assertThat(result, is(equalTo(expectedResult)));
+        Object result = adapter.marshal( value );
+        assertThat( result, is( equalTo( expectedResult ) ) );
     }
 
     @Test
@@ -43,8 +45,8 @@ public class RowValueAdapterTest {
 
         Object value = 9999;
 
-        Object result = adapter.marshal(value);
-        assertThat(result, is(equalTo(value)));
+        Object result = adapter.marshal( value );
+        assertThat( result, is( equalTo( value ) ) );
 
     }
 
@@ -54,8 +56,8 @@ public class RowValueAdapterTest {
 
         Object value = true;
 
-        Object result = adapter.marshal(value);
-        assertThat(result, is(equalTo(value)));
+        Object result = adapter.marshal( value );
+        assertThat( result, is( equalTo( value ) ) );
 
     }
 
@@ -65,8 +67,8 @@ public class RowValueAdapterTest {
 
         Object value = "FooBar";
 
-        Object result = adapter.marshal(value);
-        assertThat(result, is(equalTo(value)));
+        Object result = adapter.marshal( value );
+        assertThat( result, is( equalTo( value ) ) );
     }
 
     @Test
@@ -76,11 +78,22 @@ public class RowValueAdapterTest {
         Object value = "FooBar";
 
         Object result = adapter.unmarshal( value );
-        assertThat(result, nullValue());
-
+        assertThat( result, is( equalTo( value ) ) );
     }
 
     private RowValueAdapter createRowValueAdapter() {
         return new RowValueAdapter();
+    }
+
+    private Calendar createCalendar( String format, String date ) throws Exception {
+        TimeZone tz = TimeZone.getTimeZone( "UTC" );
+        SimpleDateFormat dateFormat = new SimpleDateFormat( format );
+        dateFormat.setTimeZone( tz );
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTimeZone( tz );
+        calendar.setTime( dateFormat.parse( date ) );
+
+        return calendar;
     }
 }

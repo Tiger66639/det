@@ -13,18 +13,19 @@
 
 package org.pentaho.det.impl.domain.adapter;
 
-
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class RowValueAdapter extends XmlAdapter<Object, Object> {
 
 
     @Override
-    public Object unmarshal( Object s ) throws Exception {
-        return null;
+    public Object unmarshal( Object value ) throws Exception {
+        return value;
     }
 
     /**
@@ -35,8 +36,8 @@ public class RowValueAdapter extends XmlAdapter<Object, Object> {
      */
     @Override
     public Object marshal( Object rowValue ) throws Exception {
-        if( rowValue instanceof Date ) { //ugly
-            return this.marshal( (Date) rowValue );
+        if( rowValue instanceof Calendar) { //ugly
+            return this.marshal( (Calendar) rowValue );
         }
 
         return rowValue;
@@ -44,23 +45,15 @@ public class RowValueAdapter extends XmlAdapter<Object, Object> {
 
     /**
      * Function that will format the Date value and return a string representation of it,
-     * according to google DataTable specifications
+     * according to ISO 8601
      *
      * @param rowValue date to be formatted
      * @return string representation of the date value
      * @throws Exception
      */
-    public Object marshal( Date rowValue ) throws  Exception {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime( rowValue );
-
-        return "Date(" +
-                cal.get( Calendar.YEAR ) + ", " +
-                cal.get( Calendar.MONTH ) + ", " +
-                cal.get( Calendar.DAY_OF_MONTH ) + ", " +
-                cal.get( Calendar.HOUR_OF_DAY ) + ", " +
-                cal.get( Calendar.MINUTE ) + ", " +
-                cal.get( Calendar.SECOND ) + ", " +
-                cal.get( Calendar.MILLISECOND ) +  ")";
+    public Object marshal( Calendar rowValue ) throws  Exception {
+        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.S'Z'" );
+        df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+        return df.format( rowValue.getTime() );
     }
 }
