@@ -14,79 +14,96 @@
 package org.pentaho.det.impl.domain.adapter;
 
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Collection;
 import java.util.TimeZone;
+import java.util.GregorianCalendar;
+
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
 
+@RunWith( Parameterized.class )
 public class RowValueAdapterTest {
 
-    @Test
-    public void testDateMarshal() throws Exception {
-        RowValueAdapter adapter = this.createRowValueAdapter();
+    private Object valueToMarshal;
+    private Object valueToUnmarshal;
+    private RowValueAdapter rowValueAdapter;
 
-        Object value = this.createCalendar( "yyyy/MM/dd HH:mm:ss.S", "2000/04/25 13:37:00.666" );
-        Object expectedResult = "2000-04-25T13:37:00.666Z";
+    @Before
+    public void initialize() {
+        rowValueAdapter = this.createRowValueAdapter();
+    }
 
-        Object result = adapter.marshal( value );
-        assertThat( result, is( equalTo( expectedResult ) ) );
+    public RowValueAdapterTest( Object valueToMarshal, Object valueToUnmarshal ) {
+        this.valueToMarshal = valueToMarshal;
+        this.valueToUnmarshal = valueToUnmarshal;
+    }
+
+    @Parameters
+    public static Collection<Object[]> rowValues() throws Exception {
+        return Arrays.asList(new Object[][] {
+                {
+                        "FooBar", "FooBar"
+                },
+                {
+                        1337, 1337
+                },
+                {
+                        false, false
+                },
+                {
+                        createCalendar("yyyy/MM/dd HH:mm:ss.S", "2000/04/25 13:37:00.666"),
+                        "2000-04-25T13:37:00.666Z"
+                }
+        });
     }
 
     @Test
-    public void testIntegerMarshal() throws Exception {
-        RowValueAdapter adapter = this.createRowValueAdapter();
-
-        Object value = 9999;
-
-        Object result = adapter.marshal( value );
-        assertThat( result, is( equalTo( value ) ) );
-
+    public void testRowValueMarshal() throws Exception {
+        Object result = this.rowValueAdapter.marshal( this.valueToMarshal );
+        assertThat( result, is( equalTo( this.valueToUnmarshal ) ) );
     }
 
     @Test
-    public void testBooleanMarshal() throws Exception {
-        RowValueAdapter adapter = this.createRowValueAdapter();
-
-        Object value = true;
-
-        Object result = adapter.marshal( value );
-        assertThat( result, is( equalTo( value ) ) );
-
+    public void testRowValueUnmarshal() throws Exception {
+        Object result = this.rowValueAdapter.unmarshal( this.valueToUnmarshal );
+        assertThat( result, is( equalTo( this.valueToMarshal ) ) );
     }
 
     @Test
-    public void testStringMarshal() throws Exception {
-        RowValueAdapter adapter = this.createRowValueAdapter();
+    public void testRowValueMarshalAndUnmarshal() throws Exception {
+        Object marshalResult = this.rowValueAdapter.marshal( this.valueToMarshal );
+        Object unmarsalResult = this.rowValueAdapter.unmarshal( marshalResult );
 
-        Object value = "FooBar";
-
-        Object result = adapter.marshal( value );
-        assertThat( result, is( equalTo( value ) ) );
+        assertThat( unmarsalResult, is( equalTo( this.valueToMarshal ) ) );
     }
 
     @Test
-    public void testRowValueAdapterUnmarshall() throws Exception {
-        RowValueAdapter adapter = this.createRowValueAdapter();
+    public void testRowValueUnMarshalAndMarshal() throws Exception {
+        Object unmarsalResult = this.rowValueAdapter.unmarshal( this.valueToUnmarshal );
+        Object marshalResult = this.rowValueAdapter.marshal( unmarsalResult );
 
-        Object value = "FooBar";
-
-        Object result = adapter.unmarshal( value );
-        assertThat( result, is( equalTo( value ) ) );
+        assertThat( marshalResult, is( equalTo( this.valueToUnmarshal ) ) );
     }
 
+
+    //region Auxiliary Methods
     private RowValueAdapter createRowValueAdapter() {
         return new RowValueAdapter();
     }
 
-    private Calendar createCalendar( String format, String date ) throws Exception {
-        TimeZone tz = TimeZone.getTimeZone( "UTC" );
+    private static Calendar createCalendar( String format, String date ) throws Exception {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
         SimpleDateFormat dateFormat = new SimpleDateFormat( format );
         dateFormat.setTimeZone( tz );
 
@@ -96,4 +113,5 @@ public class RowValueAdapterTest {
 
         return calendar;
     }
+    //endregion
 }
