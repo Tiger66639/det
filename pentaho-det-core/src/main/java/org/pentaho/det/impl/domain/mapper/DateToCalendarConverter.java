@@ -16,6 +16,7 @@ package org.pentaho.det.impl.domain.mapper;
 
 import org.pentaho.det.api.domain.mapper.IConverter;
 import org.pentaho.di.core.exception.KettleValueException;
+import org.pentaho.det.impl.domain.mapper.UnableToConvertException;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
 import java.util.Calendar;
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-public class DateToCalendarConverter implements IConverter {
+public class DateToCalendarConverter implements IConverter<ValueMetaInterface> {
 
     /**
      * Converts {@code originalValue} to a calendar, using {@code valueMeta}
@@ -36,16 +37,20 @@ public class DateToCalendarConverter implements IConverter {
      * @throws KettleValueException
      */
     @Override
-    public Object convertObject( Object originalValue, ValueMetaInterface valueMeta ) throws KettleValueException {
+    public Object convertObject( Object originalValue, ValueMetaInterface valueMeta ) throws UnableToConvertException {
 
-        Date normalStorageValue = (Date) valueMeta.convertToNormalStorageType( originalValue );
-        TimeZone timezone = valueMeta.getDateFormatTimeZone();
+        try {
+            Date normalStorageValue = (Date) valueMeta.convertToNormalStorageType( originalValue );
+            TimeZone timezone = valueMeta.getDateFormatTimeZone();
 
-        Calendar date = new GregorianCalendar();
-        date.setTime( normalStorageValue );
-        date.setTimeZone( timezone );
+            Calendar convertedValue = new GregorianCalendar();
+            convertedValue.setTime( normalStorageValue );
+            convertedValue.setTimeZone( timezone );
 
-        return date;
+            return convertedValue;
+        } catch ( KettleValueException kve ) {
+            throw new UnableToConvertException( originalValue, kve.getCause() );
+        }
     }
 
     @Override

@@ -22,8 +22,8 @@ import org.pentaho.det.impl.domain.DataTable;
 import org.pentaho.det.impl.domain.DataTableEntry;
 import org.pentaho.det.impl.domain.Field;
 import org.pentaho.det.impl.domain.mapper.MapKettleToGoogleDataTable;
+import org.pentaho.det.impl.domain.mapper.UnableToConvertException;
 import org.pentaho.di.core.exception.KettleStepException;
-import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.trans.step.RowAdapter;
@@ -70,8 +70,8 @@ public class StepPreviewDataSource implements IDataSource {
 
           dataList.add( converter.convertObject( rowDataTrimmed[i], valueMeta ) );
 
-        } catch ( KettleValueException kve ) {
-          throw new KettleStepException( kve.getMessage() );
+        } catch ( UnableToConvertException utce ) {
+          throw new KettleStepException( utce.getMessage() );
         }
       }
 

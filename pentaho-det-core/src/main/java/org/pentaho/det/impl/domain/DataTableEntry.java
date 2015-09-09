@@ -15,8 +15,6 @@ package org.pentaho.det.impl.domain;
 
 import org.pentaho.det.api.domain.IDataTable;
 import org.pentaho.det.api.domain.IDataTableEntry;
-import org.pentaho.di.core.exception.KettleValueException;
-import org.pentaho.di.core.row.RowMetaInterface;
 
 import java.util.ArrayList;
 import java.util.List;

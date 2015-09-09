@@ -18,11 +18,13 @@ import org.pentaho.det.api.domain.IField.ColumnType;
 import org.pentaho.det.api.domain.mapper.IConverter;
 import org.pentaho.det.api.domain.mapper.IMapKettleToGoogleDataType;
 import org.pentaho.di.core.exception.KettleValueException;
+import org.pentaho.det.impl.domain.mapper.UnableToConvertException;
 import org.pentaho.di.core.row.ValueMetaInterface;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * MapKettleToGoogleDataTable is responsible for the mapping between Kettle Data Types and Google DataTable Data Types
@@ -95,35 +97,25 @@ import java.util.Map;
 public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
 
     //region properties
-    @Override
-    public void setTypeMapping( Map<Integer, ColumnType> map ) {
-        this.typeMapping = map;
-    }
-    @Override
-    public Map<Integer, ColumnType> getTypeMapping() {
+    /*public Map<Integer, ColumnType> getTypeMapping() {
         return Collections.unmodifiableMap( this.typeMapping );
-    }
-    private Map<Integer, ColumnType> typeMapping;
+    }*/
+    private Map<Integer, ColumnType> dataTypeMapping;
 
-    @Override
-    public void setConverterMapping( Map<Integer, IConverter> map ) {
-        this.converterMapping = map;
-    }
-    @Override
-    public Map<Integer, IConverter> getConverterMapping() {
-        return this.converterMapping;
-    }
+    /*public Map<Integer, IConverter> getConverterMapping() {
+        return Collections.unmodifiableMap( this.converterMapping );
+    }*/
     private Map<Integer, IConverter> converterMapping;
     //endregion
 
     //region Constructors
     public MapKettleToGoogleDataTable() {
-        this.typeMapping = defaultTypeMapConfiguration();
+        this.dataTypeMapping = defaultTypeMapConfiguration();
         this.converterMapping = defaultConverterConfiguration();
     }
 
     public MapKettleToGoogleDataTable( HashMap<Integer, ColumnType> map, Map<Integer, IConverter> converterMap ) {
-        this.typeMapping = map;
+        this.dataTypeMapping = map;
         this.converterMapping = converterMap;
     }
     //endregion
@@ -135,8 +127,8 @@ public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
      * @param columnType Google DataTable data type
      */
     @Override
-    public void addDataType( Integer kettleType, ColumnType columnType ) {
-        this.typeMapping.put( kettleType, columnType );
+    public void putDataType( Integer kettleType, ColumnType columnType ) {
+        this.dataTypeMapping.put( kettleType, columnType );
     }
 
     /**
@@ -146,7 +138,17 @@ public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
      */
     @Override
     public void removeDataType( Integer kettleType ) {
-        this.typeMapping.remove( kettleType );
+        this.dataTypeMapping.remove( kettleType );
+    }
+
+
+    /**
+     * Removes all existing entry of the mapping between a kettle data type and a Google DataTable data type
+     *
+     */
+    @Override
+    public void clearDataTypeMapping() {
+        this.dataTypeMapping.clear();
     }
 
     /**
@@ -159,7 +161,7 @@ public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
      */
     @Override
     public ColumnType getDataType( Integer kettleType ) {
-        ColumnType colType = this.typeMapping.get( kettleType );
+        ColumnType colType = this.dataTypeMapping.get( kettleType );
 
         if ( colType == null ) {
             colType = ColumnType.STRING;
@@ -169,29 +171,63 @@ public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
     }
 
     @Override
-    public void addConverter( Integer kettleType, IConverter converter ) {
+    public Set<Map.Entry<Integer, ColumnType>> getDataTypes() {
+        return this.dataTypeMapping.entrySet();
+    }
+
+    /**
+     * Adds a new mapping entry between a kettle data type and a object type converter
+     *
+     * @param kettleType Kettle data type
+     * @param converter Object Type Converter
+     */
+    @Override
+    public void putConverter( Integer kettleType, IConverter converter ) {
         this.converterMapping.put( kettleType, converter );
     }
 
+    /**
+     * Removes an existing entry of the mapping between a kettle data type and a object type converter
+     *
+     * @param kettleType Kettle data type
+     */
     @Override
     public void removeConverter( Integer kettleType ) {
        this.converterMapping.remove( kettleType );
     }
 
+    /**
+     * Removes all existing entry of the mapping between a kettle data type and a object type converter
+     *
+     */
     @Override
-    public IConverter getConverter( Integer kettleType ) throws KettleValueException {
+    public void clearConverterMapping() {
+        this.converterMapping.clear();
+    }
+
+    @Override
+    public IConverter getConverter( Integer kettleType ) {
         IConverter converter = this.converterMapping.get( kettleType );
 
         if ( converter == null) {
-            converter = new IConverter() {
+            converter = new IConverter<ValueMetaInterface>() {
                 @Override
-                public Object convertObject(Object originalValue, ValueMetaInterface valueMeta) throws KettleValueException {
-                    return valueMeta.convertToNormalStorageType( originalValue );
+                public Object convertObject( Object originalValue, ValueMetaInterface valueMeta ) throws UnableToConvertException {
+                    try {
+                        return valueMeta.convertToNormalStorageType( originalValue );
+                    } catch ( KettleValueException kve ) {
+                        throw new UnableToConvertException( originalValue, kve.getCause() );
+                    }
                 }
             };
         }
 
         return converter;
+    }
+
+    @Override
+    public Set<Map.Entry<Integer, IConverter>> getConverters() {
+        return this.converterMapping.entrySet();
     }
 
     //region private
