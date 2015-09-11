@@ -109,25 +109,20 @@
             <configuration>
               <specRunnerTemplate>REQUIRE_JS</specRunnerTemplate>
               <keepServerAlive>true</keepServerAlive>
+
               <preloadSources>
                 <source>webjars/require.js</source>
-                <source>src/test/resources/web/requireConfig.js</source>
+                <source>src/test/resources/requireConfig.js</source>
               </preloadSources>
 
-              <jsSrcDir>src/main/resources/web</jsSrcDir>
-              <jsTestSrcDir>src/test/resources</jsTestSrcDir>
+              <jsSrcDir>src/main/resources/web/js</jsSrcDir>
+              <jsTestSrcDir>src/test/resources/web/js</jsTestSrcDir>
 
               <specExcludes>
                 <include>**/*Mock.js</include>
               </specExcludes>
 
               <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
-              <webDriverCapabilities>
-                <capability>
-                  <name>phantomjs.binary.path</name>
-                  <value>${phantomjs.binary}</value>
-                </capability>
-              </webDriverCapabilities>
 
             </configuration>
           </plugin>
