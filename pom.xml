@@ -123,6 +123,13 @@
               </specExcludes>
 
               <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
+              <webDriverCapabilities>
+                <capability>
+                  <name>phantomjs.binary.path</name>
+                  <!-- phantomjs.binary is defined at runtime by phantomjs-maven-plugin -->
+                  <value>${phantomjs.binary}</value>
+                </capability>
+              </webDriverCapabilities>
 
             </configuration>
           </plugin>
