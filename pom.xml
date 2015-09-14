@@ -109,26 +109,65 @@
             <configuration>
               <specRunnerTemplate>REQUIRE_JS</specRunnerTemplate>
               <keepServerAlive>true</keepServerAlive>
+
               <preloadSources>
                 <source>webjars/require.js</source>
-                <source>src/test/resources/web/requireConfig.js</source>
+                <source>src/test/resources/requireConfig.js</source>
               </preloadSources>
 
-              <jsSrcDir>src/main/resources/web</jsSrcDir>
-              <jsTestSrcDir>src/test/resources</jsTestSrcDir>
+              <jsSrcDir>src/main/resources/web/js</jsSrcDir>
+              <jsTestSrcDir>src/test/resources/web/js</jsTestSrcDir>
 
               <specExcludes>
                 <include>**/*Mock.js</include>
               </specExcludes>
 
               <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
-              <webDriverCapabilities>
-                <capability>
-                  <name>phantomjs.binary.path</name>
-                  <value>${phantomjs.binary}</value>
-                </capability>
-              </webDriverCapabilities>
 
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>com.github.timurstrekalov</groupId>
+            <artifactId>saga-maven-plugin</artifactId>
+            <version>1.5.3</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>coverage</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <baseDir>http://localhost:${jasmine.serverPort}</baseDir>
+              <outputDir>target/coverage</outputDir>
+              <noInstrumentPatterns>
+                <pattern>.*/spec/.*</pattern> <!-- Don't instrument specs -->
+                <pattern>.*/webjars/.*</pattern> <!-- Don't instrument webjars -->
+                <pattern>.*/src/test/resources/requireConfig.js</pattern> <!-- Don't instrument webjars -->
+              </noInstrumentPatterns>
+              <reportFormats>HTML,RAW,CSV,PDF,COBERTURA</reportFormats>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+              <formats>
+                <format>html</format>
+                <format>xml</format>
+              </formats>
+              <check>
+                <branchRate>80</branchRate>
+                <lineRate>90</lineRate>
+                <haltOnFailure>false</haltOnFailure>
+                <totalBranchRate>80</totalBranchRate>
+                <totalLineRate>90</totalLineRate>
+                <packageLineRate>90</packageLineRate>
+                <packageBranchRate>80</packageBranchRate>
+              </check>
             </configuration>
           </plugin>
         </plugins>
