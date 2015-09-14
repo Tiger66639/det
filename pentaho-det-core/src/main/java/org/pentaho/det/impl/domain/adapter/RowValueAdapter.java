@@ -17,21 +17,57 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RowValueAdapter extends XmlAdapter<Object, Object> {
 
+    private static final Pattern _dateIso8601Pattern = Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{1,3}Z");
 
+    /**
+     *
+     * @param value row value
+     * @return a calendar if the string represents a date, otherwise returns the value unchanged
+     * @throws Exception
+     */
     @Override
     public Object unmarshal( Object value ) throws Exception {
+
+        String stringValue = value.toString();
+        Matcher match = _dateIso8601Pattern.matcher( stringValue );
+        if( match.find() ) {
+            return this.calendarUnmarshal( stringValue );
+        }
+
         return value;
+    }
+
+    /**
+     * Function that will take the String representing a date according to ISO 8601, and return
+     * a calendar of that date.
+     *
+     * @param value ISO8601 String representation of a date
+     * @return string representation of the date value
+     * @throws Exception
+     */
+    public Object calendarUnmarshal( String value ) throws Exception {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'hh:mm:ss.S'Z'" );
+        dateFormat.setTimeZone( tz );
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTimeZone( tz );
+        calendar.setTime( dateFormat.parse( value ) );
+
+        return calendar;
     }
 
     /**
      *
      * @param rowValue row value
-     * @return a string if rowValue is a Date, otherwise returns rowValue unchanged
+     * @return a string if rowValue is a Calendar, otherwise returns rowValue unchanged
      * @throws Exception
      */
     @Override
@@ -44,7 +80,7 @@ public class RowValueAdapter extends XmlAdapter<Object, Object> {
     }
 
     /**
-     * Function that will format the Date value and return a string representation of it,
+     * Function that will format the Calendar value and return a string representation of it,
      * according to ISO 8601
      *
      * @param rowValue date to be formatted

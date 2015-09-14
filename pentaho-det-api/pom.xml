@@ -34,11 +34,4 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>pentaho-kettle</groupId>
-      <artifactId>kettle-core</artifactId>
-    </dependency>
-  </dependencies>
-
 </project>

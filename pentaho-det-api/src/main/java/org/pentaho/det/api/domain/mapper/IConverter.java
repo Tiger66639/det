@@ -13,9 +13,8 @@
 
 package org.pentaho.det.api.domain.mapper;
 
-import org.pentaho.di.core.exception.KettleValueException;
-import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.det.impl.domain.mapper.UnableToConvertException;
 
-public interface IConverter {
-    Object convertObject( Object originalValue, ValueMetaInterface valueMeta ) throws KettleValueException;
+public interface IConverter<MetaInfoType> {
+    Object convertObject( Object originalValue, MetaInfoType valueMetaInformation ) throws UnableToConvertException;
 }

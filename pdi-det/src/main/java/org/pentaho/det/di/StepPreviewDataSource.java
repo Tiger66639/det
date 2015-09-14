@@ -22,8 +22,8 @@ import org.pentaho.det.impl.domain.DataTable;
 import org.pentaho.det.impl.domain.DataTableEntry;
 import org.pentaho.det.impl.domain.Field;
 import org.pentaho.det.impl.domain.mapper.MapKettleToGoogleDataTable;
+import org.pentaho.det.impl.domain.mapper.UnableToConvertException;
 import org.pentaho.di.core.exception.KettleStepException;
-import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.trans.step.RowAdapter;
@@ -59,22 +59,28 @@ public class StepPreviewDataSource implements IDataSource {
       this.initFields( rowMeta );
     }
 
-    private List<Object> handleRowDataValues( RowMetaInterface rowMeta, Object[] rowData ) throws KettleStepException {
+    private List<Object> handleRowDataValues( RowMetaInterface rowMeta, Object[] rowData )
+            throws KettleStepException {
+
       Object[] rowDataTrimmed = Arrays.copyOf( rowData, rowMeta.size() );
 
       List<Object> dataList = new ArrayList<Object>();
       for ( int i = 0; i < rowMeta.size(); i++ ) {
         try {
-          ValueMetaInterface valueMeta = rowMeta.getValueMeta( i );
-          IConverter converter = mapping.getConverter( valueMeta.getType() );
+          ValueMetaInterface valueMeta = rowMeta.getValueMeta(i);
+          IConverter<ValueMetaInterface> converter = mapping.getConverter( valueMeta.getType() );
 
-          dataList.add( converter.convertObject( rowDataTrimmed[i], valueMeta ) );
+          Object value = null;
+          if( rowDataTrimmed[i] != null ) {
+            value = converter.convertObject( rowDataTrimmed[i], valueMeta );
+          }
 
-        } catch ( KettleValueException kve ) {
-          throw new KettleStepException( kve.getMessage() );
+          dataList.add( value );
+
+        } catch ( UnableToConvertException utce ) {
+          throw new KettleStepException( utce.getMessage() );
         }
       }
-
       return dataList;
     }
 
@@ -111,12 +117,6 @@ public class StepPreviewDataSource implements IDataSource {
   }
   private IDataTable dataTable;
 
-  public MapKettleToGoogleDataTable getMapping() {
-    return this.mapping;
-  }
-  public void setMapping( MapKettleToGoogleDataTable map ) {
-    this.mapping = map;
-  }
   private MapKettleToGoogleDataTable mapping;
 
   public StepInterface getStep() {
@@ -141,7 +141,7 @@ public class StepPreviewDataSource implements IDataSource {
   public StepPreviewDataSource( StepInterface step ) {
     this.uuid = UUID.randomUUID();
     this.dataTable = new DataTable();
-    this.mapping = new MapKettleToGoogleDataTable();
+    this.mapping = MapKettleToGoogleDataTable.getInstance();
     this.setStep( step );
   }
   // endregion
