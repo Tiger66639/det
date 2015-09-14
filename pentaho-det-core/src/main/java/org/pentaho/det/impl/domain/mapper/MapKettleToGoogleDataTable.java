@@ -97,28 +97,24 @@ import java.util.Set;
 public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
 
     //region properties
-    /*public Map<Integer, ColumnType> getTypeMapping() {
-        return Collections.unmodifiableMap( this.typeMapping );
-    }*/
     private Map<Integer, ColumnType> dataTypeMapping;
-
-    /*public Map<Integer, IConverter> getConverterMapping() {
-        return Collections.unmodifiableMap( this.converterMapping );
-    }*/
     private Map<Integer, IConverter> converterMapping;
+    private static MapKettleToGoogleDataTable instance = null;
     //endregion
 
     //region Constructors
-    public MapKettleToGoogleDataTable() {
+    private MapKettleToGoogleDataTable() {
         this.dataTypeMapping = defaultTypeMapConfiguration();
         this.converterMapping = defaultConverterConfiguration();
     }
-
-    public MapKettleToGoogleDataTable( HashMap<Integer, ColumnType> map, Map<Integer, IConverter> converterMap ) {
-        this.dataTypeMapping = map;
-        this.converterMapping = converterMap;
-    }
     //endregion
+
+    public static MapKettleToGoogleDataTable getInstance() {
+        if ( instance == null) {
+            instance = new MapKettleToGoogleDataTable();
+        }
+        return instance;
+    }
 
     /**
      * Adds a new mapping entry between a kettle data type and a Google DataTable data type
@@ -230,8 +226,8 @@ public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
         return this.converterMapping.entrySet();
     }
 
-    //region private
-    private Map<Integer, ColumnType> defaultTypeMapConfiguration() {
+    //region aux methods
+    protected Map<Integer, ColumnType> defaultTypeMapConfiguration() {
         Map<Integer, ColumnType> defaultConfig = new HashMap<Integer, ColumnType>();
 
         defaultConfig.put( ValueMetaInterface.TYPE_INTEGER,   ColumnType.NUMBER );
@@ -245,7 +241,7 @@ public class MapKettleToGoogleDataTable implements IMapKettleToGoogleDataType {
         return defaultConfig;
     }
 
-    private Map<Integer, IConverter> defaultConverterConfiguration() {
+    protected Map<Integer, IConverter> defaultConverterConfiguration() {
         Map<Integer, IConverter> defaultConfig = new HashMap<Integer, IConverter>();
 
         IConverter dateConvert = new DateToCalendarConverter();

@@ -39,7 +39,7 @@ public class MapKettleToGoogleDataTableTest {
         MapKettleToGoogleDataTable mapper = this.createDefaultMapper();
         Map<Integer, ColumnType> expectedMap = this.createDefaultDataTypeMap();
 
-        this.assertThatSetsEqual(mapper.getDataTypes(), expectedMap.entrySet());
+        this.assertThatSetsEqual( mapper.getDataTypes(), expectedMap.entrySet() );
     }
 
     @Test
@@ -58,9 +58,9 @@ public class MapKettleToGoogleDataTableTest {
         ValueMetaInterface valueMeta = this.createValueMetaInterface( -1 );
 
         ColumnType defaultType = ColumnType.STRING;
-        ColumnType returnedDataType = mapper.getDataType(valueMeta.getType());
+        ColumnType returnedDataType = mapper.getDataType( valueMeta.getType() );
 
-        assertThat( returnedDataType, is( equalTo( defaultType ) ) );
+        assertThat( returnedDataType, is( equalTo(defaultType) ) );
     }
 
     @Test
@@ -69,7 +69,7 @@ public class MapKettleToGoogleDataTableTest {
         ValueMetaInterface  valueMeta = this.createValueMetaInterface( 99 );
 
         ColumnType type = ColumnType.NUMBER;
-        mapper.putDataType( valueMeta.getType(), type );
+        mapper.putDataType(valueMeta.getType(), type);
         Map.Entry<Integer,ColumnType> expectedEntry = this.createDataTypeEntry( valueMeta.getType(), type );
 
         assertThat( mapper.getDataTypes(), hasItem(expectedEntry) );
@@ -85,7 +85,7 @@ public class MapKettleToGoogleDataTableTest {
 
         assertThat( mapper.getDataTypes(), hasItem(expectedEntry) );
         mapper.removeDataType( metaType );
-        assertThat( mapper.getDataTypes(), not( hasItem(expectedEntry) ) );
+        assertThat(mapper.getDataTypes(), not( hasItem( expectedEntry ) ) );
     }
 
     @Test
@@ -93,7 +93,7 @@ public class MapKettleToGoogleDataTableTest {
         MapKettleToGoogleDataTable mapper = this.createDefaultMapper();
         Map<Integer, IConverter> expectedMap = this.createDefaultConverterMap();
 
-        this.assertThatSetsEqual(mapper.getConverters(), expectedMap.entrySet());
+        this.assertThatSetsEqual( mapper.getConverters(), expectedMap.entrySet() );
     }
 
     @Test
@@ -103,7 +103,7 @@ public class MapKettleToGoogleDataTableTest {
         IConverter expectedConverter = new DateToCalendarConverter();
         IConverter returnedConverter = mapper.getConverter( ValueMetaInterface.TYPE_DATE );
 
-        assertThat( returnedConverter, is( equalTo( expectedConverter ) ) );
+        assertThat( returnedConverter, is( equalTo( expectedConverter) ) );
     }
 
     @Test
@@ -112,7 +112,7 @@ public class MapKettleToGoogleDataTableTest {
         ValueMetaInterface  valueMeta = this.createValueMetaInterface( 99 );
 
         IConverter converter = new DateToCalendarConverter();
-        mapper.putConverter( valueMeta.getType(), converter );
+        mapper.putConverter(valueMeta.getType(), converter);
         Map.Entry<Integer,IConverter> expectedEntry = this.createConverterEntry( valueMeta.getType(), converter );
 
         assertThat( mapper.getConverters(), hasItem(expectedEntry) );
@@ -124,7 +124,7 @@ public class MapKettleToGoogleDataTableTest {
 
         Integer metaType = ValueMetaInterface.TYPE_DATE;
         IConverter converter = new DateToCalendarConverter();
-        Map.Entry<Integer,IConverter> expectedEntry = this.createConverterEntry(metaType, converter);
+        Map.Entry<Integer,IConverter> expectedEntry = this.createConverterEntry( metaType, converter );
 
         assertThat( mapper.getConverters(), hasItem( expectedEntry ) );
         mapper.removeConverter( metaType );
@@ -134,12 +134,26 @@ public class MapKettleToGoogleDataTableTest {
 
 
     // region auxiliary methods
-    private MapKettleToGoogleDataTable createDefaultMapper() {
-        return new MapKettleToGoogleDataTable();
+    private MapKettleToGoogleDataTable createEmptyMapper() {
+        MapKettleToGoogleDataTable instance = MapKettleToGoogleDataTable.getInstance();
+        instance.clearDataTypeMapping();
+        instance.clearConverterMapping();
+
+        return instance;
     }
 
-    private MapKettleToGoogleDataTable createEmptyMapper() {
-        return new MapKettleToGoogleDataTable( new HashMap<Integer, ColumnType>(), new HashMap<Integer, IConverter>() );
+    private MapKettleToGoogleDataTable createDefaultMapper() {
+        MapKettleToGoogleDataTable instance = this.createEmptyMapper();
+
+        for( Map.Entry<Integer, ColumnType> entry : instance.defaultTypeMapConfiguration().entrySet() ) {
+            instance.putDataType( entry.getKey(), entry.getValue() );
+        }
+
+        for( Map.Entry<Integer, IConverter> entry : instance.defaultConverterConfiguration().entrySet() ) {
+            instance.putConverter( entry.getKey(), entry.getValue() );
+        }
+
+        return instance;
     }
 
     private Map<Integer, ColumnType> createDefaultDataTypeMap() {
@@ -177,7 +191,6 @@ public class MapKettleToGoogleDataTableTest {
      * Asserts that all entries of {@code mapA} are in {@code mapB} and that all entries of {@code mapB} are in {@code mapA}.
      */
     private <K,V> void assertThatSetsEqual( Set<Map.Entry<K, V>> entrySetA, Set<Map.Entry<K, V>> entrySetB ) {
-
         assertThat( entrySetA, everyItem( isIn( entrySetB ) ) );
         assertThat( entrySetB, everyItem( isIn( entrySetA ) ) );
     }

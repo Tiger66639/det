@@ -24,7 +24,7 @@ public final class RowDTO {
 
   public static final class CellDTO<T> {
 
-    @XmlElement( name = "v" )
+    @XmlElement( name = "v", nillable = true )
     @XmlJavaTypeAdapter( RowValueAdapter.class )
     //public T value;
     public T v;
