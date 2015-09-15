@@ -34,8 +34,7 @@
     <dependency.pentaho-kettle.version>${project.version}</dependency.pentaho-kettle.version>
     <karaf.version>3.0.3</karaf.version>
     <plugin.jasmine.version>1.3.1.5</plugin.jasmine.version>
-    <requirejs.version>2.1.14</requirejs.version>
-    <requirejs.version.full>${requirejs.version}-1</requirejs.version.full>
+    <requirejs.version>2.1.10</requirejs.version>
   </properties>
 
   <profiles>
@@ -51,7 +50,7 @@
         <dependency>
           <groupId>org.webjars</groupId>
           <artifactId>requirejs</artifactId>
-          <version>${requirejs.version.full}</version>
+          <version>${requirejs.version}</version>
           <scope>test</scope>
         </dependency>
         <dependency>
@@ -63,13 +62,13 @@
         <dependency>
           <groupId>org.webjars</groupId>
           <artifactId>angularjs</artifactId>
-          <version>1.2.21</version>
+          <version>1.2.15</version>
           <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.webjars</groupId>
           <artifactId>underscorejs</artifactId>
-          <version>1.7.0</version>
+          <version>1.4.4</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -107,6 +106,17 @@
               </execution>
             </executions>
             <configuration>
+              <additionalContexts>
+                <context>
+                  <contextRoot>lib</contextRoot>
+                  <directory>src/test/resources/lib</directory>
+                </context>
+                <context>
+                  <contextRoot>ui-router-state-helper</contextRoot>
+                  <directory>../ui-router-state-helper/src/main/resources/web/js</directory>
+                </context>
+              </additionalContexts>
+
               <specRunnerTemplate>REQUIRE_JS</specRunnerTemplate>
               <keepServerAlive>true</keepServerAlive>
 
@@ -115,13 +125,19 @@
                 <source>src/test/resources/requireConfig.js</source>
               </preloadSources>
 
-              <jsSrcDir>src/main/resources/web/js</jsSrcDir>
-              <jsTestSrcDir>src/test/resources/web/js</jsTestSrcDir>
-
               <specExcludes>
                 <include>**/*Mock.js</include>
               </specExcludes>
 
+              <!-- Folders location in project -->
+              <jsSrcDir>src/main/resources/web</jsSrcDir>
+              <jsTestSrcDir>src/test/resources/web</jsTestSrcDir>
+
+              <!-- Folders location in testing server -->
+              <specDirectoryName>test-src</specDirectoryName>
+              <srcDirectoryName>src</srcDirectoryName>
+
+              <!-- Web Driver Config -> PhantomJS -->
               <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
               <webDriverCapabilities>
                 <capability>

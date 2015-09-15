@@ -1,24 +1,23 @@
 require.config({
     "paths": {
-        "common-ui/angular": "/webjars/angular",
-        "common-ui/angular-route": "/webjars/angular-route",
-        "common-ui/angular-resource": "/webjars/angular-resource",
+        "angular"           : "/webjars/angular",
+        "angular-ui-router" : "/webjars/angular-route",
+        "angular-resource"  : "/webjars/angular-resource",
+        "angular-mocks"     : "/webjars/angular-mocks",
 
-        //"angular-mocks": "/webjars/angular-mocks"
+        "underscorejs"      : "/webjars/underscore",
+        "text"              : "/webjars/text",
+
+        "ui-router-state-helper" : "/ui-router-state-helper/stateHelper",
+        "service"                : "/lib/service/service"
     },
+
     "shim" : {
-        "common-ui/angular" : { "exports": "angular" },
-        "common-ui/angular-route" : { "deps": ["common-ui/angular"] },
-        "common-ui/angular-resource" : { "deps": ["common-ui/angular"] }
+        "angular"           : { "exports" :  "angular"  },
+        "angular-ui-router" : { "deps"    : ["angular"] },
+        "angular-resource"  : { "deps"    : ["angular"] },
+        "angular-mocks"     : { "deps"    : ["angular"] },
 
-        //"angular-mocks" : { "deps": ["common-ui/angular"] }
-
-    },
-
-    "map": {
-        "*": {
-            "angular": "common-ui/angular",
-            "angular-resource": "common-ui/angular-resource"
-        }
+        "ui-router-state-helper" : { "deps"    : ["angular"] }
     }
 });
